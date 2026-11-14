@@ -1,0 +1,35 @@
+---
+pagetitle: "napari talks"
+format:
+  html:
+    theme: none
+    minimal: true
+    include-in-header:
+      text: |
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+        <style>
+          :root { color-scheme: dark; --ground:#1b1c21; --ink:#f0f1f2; --muted:#9ca4af; --rule:#424a54; --link:#80d1ff; --accent:#ccb98f; }
+          @media (prefers-color-scheme: light) { :root { color-scheme: light; --ground:#f7f7f7; --ink:#1e1e21; --muted:#686868; --rule:#c5c3c1; --link:#0074b8; --accent:#564c69; } }
+          body { background: var(--ground); color: var(--ink); font: 18px/1.5 "IBM Plex Sans", sans-serif; max-width: 760px; margin: 0 auto; padding: 56px 16px; }
+          h1 { font-weight: 600; font-size: 40px; margin: 16px 0 8px; }
+          a { color: var(--link); }
+          .muted { color: var(--muted); }
+          ul.talks { list-style: none; padding: 0; margin: 32px 0; }
+          ul.talks li { padding: 16px 0; border-top: 1px solid var(--rule); }
+          ul.talks .date { display: block; font: 15px "IBM Plex Mono", monospace; color: var(--muted); }
+          ul.talks a { font-size: 22px; font-weight: 600; text-decoration: none; }
+          .logo-light { display: none; }
+          @media (prefers-color-scheme: light) { .logo-light { display: inline; } .logo-dark { display: none; } }
+        </style>
+---
+
+```{=html}
+<img class="logo-dark" src="_extensions/napari/logos/gradient-text-side-dark.svg" width="180" alt="napari">
+<img class="logo-light" src="_extensions/napari/logos/gradient-text-side-light.svg" width="180" alt="napari">
+<h1>talks</h1>
+<p class="muted">Slides from talks about <a href="https://napari.org">napari</a>, the multi-dimensional image viewer for Python.</p>
+<ul class="talks">
+  <li><span class="date">2026-08 · EuroSciPy</span><a href="talks/2026-08-euroscipy-sample/">(Re)connecting foundational libraries with their communities</a></li>
+</ul>
+<p class="muted">Built with Quarto and reveal.js. Press <b>T</b> in a deck to switch light / dark.</p>
+```
