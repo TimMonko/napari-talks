@@ -1,0 +1,190 @@
+/*-- scss:defaults --*/
+// Sass needs literal colours; the dark (stage) values are the defaults and the CSS
+// custom properties in the rules below switch everything to light when needed.
+$body-bg: #1b1c21;
+$body-color: #f0f1f2;
+$link-color: #80d1ff;
+$selection-bg: #4560c4;
+$font-family-sans-serif: "IBM Plex Sans", system-ui, sans-serif;
+$font-family-monospace: "IBM Plex Mono", ui-monospace, monospace;
+$presentation-heading-font: "IBM Plex Sans", sans-serif;
+$presentation-heading-color: #f0f1f2;
+$presentation-heading-font-weight: 400;
+$presentation-heading-text-transform: none;
+$presentation-heading-letter-spacing: normal;
+$presentation-heading-line-height: 1.1;
+$presentation-font-size-root: 28px;
+$presentation-line-height: 1.35;
+$presentation-h1-font-size: 64px;
+$presentation-h2-font-size: 48px;
+$presentation-h3-font-size: 34px;
+$presentation-h4-font-size: 28px;
+$code-block-bg: #2e333e;
+$code-block-border-color: transparent;
+$code-block-font-size: 21px;
+$code-color: #ccb98f;
+$code-bg: transparent;
+
+/*-- scss:rules --*/
+// IBM Plex comes from Google Fonts (header.html); the .ttf files in fonts/ are for matplotlib and offline use.
+
+// ---- tokens (same names and values as the design system) ----
+:root, [data-theme="dark"] {
+  --ground: #1b1c21; --ground-raised: #2e333e; --rule: #424a54;
+  --ink: #f0f1f2; --ink-muted: #9ca4af; --ink-dim: #565f6c;
+  --accent: #ccb98f; --link: #80d1ff; --current: #4560c4; --on-current: #f0f1f2;
+  --warning: #e3b617; --on-warning: #1b1c21;
+  --logo-plum: #4c425d; --logo-lilac: #bab3d1; --logo-teal: #5b899a; --logo-sky: #72b5d1; --logo-sand: #ccb98f;
+}
+[data-theme="light"] {
+  --ground: #f7f7f7; --ground-raised: #ebe7e6; --rule: #c5c3c1;
+  --ink: #1e1e21; --ink-muted: #686868; --ink-dim: #b4b2af;
+  --accent: #564c69; --link: #0074b8;
+}
+:root { --font-display: "IBM Plex Sans", sans-serif; --font-text: "IBM Plex Sans", sans-serif; --font-mono: "IBM Plex Mono", monospace; --display-weight: 600; }
+
+html, body, .reveal-viewport { background: var(--ground) !important; }
+.reveal { color: var(--ink); font-family: var(--font-text); }
+.reveal h1, .reveal h2, .reveal h3 { color: var(--ink); font-family: var(--font-display); font-weight: var(--display-weight); text-wrap: balance; }
+.reveal a { color: var(--link); }
+.reveal code { font-family: var(--font-mono); }
+.reveal pre code { font-family: var(--font-mono); background: var(--ground-raised) !important; border-radius: 10px; padding: 20px 24px; }
+.reveal div.sourceCode { background: var(--ground-raised) !important; border-radius: 10px; border: 0; margin: 0; }
+
+// ---- layout grid (1280 x 720) ----
+// margins: 56 top, 64 sides, 88 bottom (the chrome band). Heading block is pinned to the top;
+// the body is centred in the space left below it, at least 32px under the heading.
+$m-top: 56px; $m-side: 64px; $m-bottom: 88px;
+.reveal .slides > section, .reveal .slides > section > section { padding: $m-top $m-side $m-bottom !important; box-sizing: border-box; height: 720px; overflow: hidden; }
+.reveal .slides section:not(.np-title):not(.stack) { display: flex !important; flex-direction: column; }
+.reveal .slides section:not(.np-title) > .kicker { order: -3; margin: 0 0 8px !important; }
+.reveal .slides section:not(.np-title) > h2 { order: -2; margin: 0 0 32px; font-size: 48px; line-height: 1.15; flex: none; }
+.reveal .slides section:not(.np-title)::before, .reveal .slides section:not(.np-title)::after { content: ""; flex: 1 1 0; min-height: 0; }
+.reveal .slides section:not(.np-title)::before { order: -1; }
+.reveal .slides section:not(.np-title)::after { order: 1; }
+.reveal .slides section:not(.np-title) > * { flex: none; }
+.reveal .slides section > p:last-child, .reveal .slides section > div:last-child { margin-bottom: 0; }
+
+// ---- chrome: footer text | slide number, logo; one flex row, lower right (built in after-body.html) ----
+.np-chrome { position: absolute; right: $m-side; bottom: 28px; z-index: 30; height: 24px; display: flex; align-items: center; gap: 16px; pointer-events: none; }
+.np-chrome > * { position: static !important; inset: auto !important; transform: none !important; margin: 0 !important; width: auto !important; height: auto !important; max-height: none !important; }
+.np-chrome .footer { display: block !important; font: 15px/24px var(--font-text) !important; color: var(--ink-muted) !important; text-align: right !important; padding: 0 !important; }
+.np-chrome .footer p { margin: 0 !important; }
+.np-chrome .slide-number { background: none !important; padding: 0 0 0 16px !important; border-left: 1px solid var(--rule); font: 15px/16px var(--font-mono) !important; font-variant-numeric: tabular-nums; color: var(--ink-muted) !important; }
+.np-chrome .slide-number a { color: inherit !important; }
+.np-chrome .slide-logo { width: 24px !important; height: 24px !important; border-radius: 0 !important; display: block; }
+.reveal.has-no-chrome .np-chrome { display: none; }
+
+// ---- type helpers ----
+.kicker { font: 700 18px/1.2 var(--font-text); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px !important; }
+.lead { font-size: 34px; line-height: 1.3; }
+.small { font-size: 22px !important; }
+.caption, .reveal figcaption, .reveal .figure-caption { font-size: 17px !important; color: var(--ink-muted); }
+.muted { color: var(--ink-muted); }
+.accent { color: var(--accent); }
+.command { font: 500 30px/1.3 var(--font-mono); color: var(--link); }
+.reveal .slides section .fragment.semi-fade-out.visible { opacity: 1; }
+.reveal .slides section .fragment.semi-fade-out.visible.current-fragment, .reveal .slides section .fragment.semi-fade-out.visible:not(.current-fragment) { opacity: 1; }
+.reveal .slides section .dim-after.visible:not(.current-fragment) { color: var(--ink-dim); }
+
+// bullets: small logo tiles
+.reveal ul { list-style: none; margin-left: 0; padding-left: 0; }
+.reveal ul > li { position: relative; padding-left: 32px; margin-bottom: 14px; }
+.reveal ul > li::before { content: ""; position: absolute; left: 4px; top: .5em; width: 12px; height: 12px; border-radius: 3px; background: var(--accent); }
+.reveal ul ul { margin: 6px 0 0 0 !important; padding: 0 !important; }
+.reveal ul ul > li { font-size: 22px; color: var(--ink-muted); margin-bottom: 2px; padding-left: 0; }
+.reveal ul ul > li::before { display: none; }
+
+// media
+// body area is 576px tall; under a one-line heading that leaves ~460px for media
+.reveal img, .reveal video { max-width: 100%; border-radius: 10px; }
+.reveal .fill { width: 100%; height: 440px; object-fit: contain; display: block; }
+.reveal .fill + p, .reveal .fill + .command { margin-top: 20px; }
+.reveal .columns img, .reveal .columns video, .reveal img.tall { max-height: 440px; width: auto; max-width: 100%; display: block; }
+.reveal img.plot { max-height: 340px; width: auto; display: block; }
+.reveal .columns { display: flex; gap: 48px; align-items: center; }
+.reveal .columns .column { min-width: 0; }
+
+// statement slides
+.reveal section.statement { gap: 40px; }
+.reveal section.statement > * { max-width: 960px; }
+.reveal section.statement p { font: var(--display-weight) 52px/1.15 var(--font-display); margin: 0; text-wrap: balance; }
+.reveal section.statement p.was { font-size: 38px; }
+
+// title slide: text column on the left; the whole napari window on the right, centred vertically on the slide.
+// The recording's caption hangs below it and does not count toward the centring.
+.reveal section.np-title { padding: $m-top $m-side !important; display: grid !important; grid-template-columns: 360px 1fr; gap: 40px; align-items: center; }
+.np-title .left { display: flex; flex-direction: column; justify-content: center; gap: 14px; min-width: 0; }
+.np-title .left p { margin: 0 !important; }
+.np-title .left p:first-child { margin-bottom: 18px !important; }
+.np-title .np-h1 { display: block; font: var(--display-weight) 40px/1.12 var(--font-display); color: var(--ink); text-wrap: balance; }
+.np-title .np-sub { display: block; font-size: 21px; line-height: 1.4; color: var(--ink-muted); }
+.np-title .np-who { display: block; font-size: 21px; line-height: 1.4; color: var(--ink); margin-top: 18px; }
+.np-title .np-who .muted { display: block; }
+.np-title .left .caption { line-height: 1.45 !important; display: block; }
+.np-title .right { min-width: 0; position: relative; }
+.np-title .right p { margin: 0 !important; }
+.np-title .right video, .np-title .right img { display: block; width: 100%; height: auto; max-height: 560px; border-radius: 10px; border: 1px solid var(--rule); }
+.np-title .right .caption { position: absolute; left: 0; top: calc(100% + 10px); }
+
+// demo slide
+.badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font: 700 15px/1.3 var(--font-text); letter-spacing: .06em; text-transform: uppercase; background: var(--warning); color: var(--on-warning); margin-right: 14px; vertical-align: middle; }
+.launch { all: unset; cursor: pointer; display: inline-flex; gap: 14px; align-items: center; padding: 16px 22px; border-radius: 10px; background: var(--current); color: var(--on-current); font: 700 24px var(--font-text); }
+.launch[hidden] { display: none; }
+.runner-status { font-size: 17px; color: var(--ink-muted); }
+
+// people tiles
+.people { display: grid; gap: 14px; }
+.person { display: flex; gap: 14px; align-items: center; font-size: 22px; }
+.person .tile { width: 52px; height: 52px; border-radius: 22%; display: grid; place-items: center; color: var(--on-warning); font: 400 21px var(--font-display); }
+.panel { background: var(--ground-raised); border-radius: 10px; padding: 24px 32px; }
+.links .lbl { font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); }
+
+// theme-specific assets
+[data-theme="light"] .only-dark, [data-theme="dark"] .only-light { display: none !important; }
+// ...and the paragraph Pandoc wraps around a theme-specific image, so the hidden twin leaves no empty block that shifts layout
+[data-theme="light"] :is(p, .quarto-figure):has(> .only-dark:only-child), [data-theme="dark"] :is(p, .quarto-figure):has(> .only-light:only-child) { display: none !important; }
+
+
+// fixes
+.reveal section.np-title > h2:empty, .reveal section.statement > h2:empty { display: none; }
+.reveal ul ul { list-style: none !important; }
+.reveal .slides section img.screenshot { image-rendering: auto; }
+// syntax colours from tokens, so code reads in both themes
+.reveal div.sourceCode pre code, .reveal pre code { color: var(--ink) !important; }
+.reveal code span.kw, .reveal code span.im, .reveal code span.cf { color: var(--accent) !important; font-weight: 500; }
+.reveal code span.st, .reveal code span.dv, .reveal code span.fl, .reveal code span.bu { color: var(--link) !important; }
+.reveal code span.co { color: var(--ink-muted) !important; font-style: normal; }
+.reveal p code, .reveal li code { color: var(--accent); }
+.links p { display: flex; gap: 16px; align-items: baseline; margin: 0 0 12px !important; }
+.links .lbl { width: 64px; flex: none; }
+.reveal pre code span { color: var(--ink) !important; }
+.reveal pre code span.kw, .reveal pre code span.im, .reveal pre code span.cf { color: var(--accent) !important; }
+.reveal pre code span.st, .reveal pre code span.dv, .reveal pre code span.fl, .reveal pre code span.bu { color: var(--link) !important; }
+.reveal pre code span.co { color: var(--ink-muted) !important; }
+
+
+
+// timeline: own design; each event is a fragment, the line grows to it, the newest event is "now"
+.np-timeline { position: relative; display: grid; grid-template-columns: repeat(var(--n, 6), 1fr); margin: 0 0 32px; }
+.np-timeline .ev { position: relative; padding-top: 56px; padding-right: 16px; }
+.np-timeline .ev::before { content: ""; position: absolute; top: 15px; left: 0; right: 0; height: 2px; background: var(--rule); }
+.np-timeline .ev .seg { position: absolute; top: 15px; left: 0; right: 0; height: 2px; background: var(--ink-muted); transform-origin: left center; transform: scaleX(1); }
+.np-timeline .ev .dot { position: absolute; top: 6px; left: 0; width: 20px; height: 20px; border-radius: 5px; background: var(--ground); border: 2px solid var(--ink-muted); box-sizing: border-box; transition: background .3s, border-color .3s, transform .3s; }
+.np-timeline .ev .yr { display: block; font: 500 17px/1 var(--font-mono); color: var(--ink-muted); margin-bottom: 10px; }
+.np-timeline .ev .what { display: block; font-size: 24px; line-height: 1.3; color: var(--ink); transition: color .3s; }
+.np-timeline .ev.future .what, .np-timeline .ev.future .yr { color: var(--ink-dim); }
+.np-timeline .ev.future .dot { border-style: dashed; border-color: var(--ink-dim); }
+// build-up
+.reveal .np-timeline .ev.fragment { opacity: 1; visibility: visible; }
+.reveal .np-timeline .ev.fragment .seg { transform: scaleX(0); transition: transform .45s ease-out; }
+.reveal .np-timeline .ev.fragment .dot, .reveal .np-timeline .ev.fragment .what, .reveal .np-timeline .ev.fragment .yr { opacity: 0; transition: opacity .3s .25s, background .3s, border-color .3s; }
+.reveal .np-timeline .ev.fragment.visible .seg { transform: scaleX(1); }
+.reveal .np-timeline .ev.fragment.visible .dot, .reveal .np-timeline .ev.fragment.visible .what, .reveal .np-timeline .ev.fragment.visible .yr { opacity: 1; }
+// "now" = the most recently revealed event (or the one marked .now when built up)
+.np-timeline .ev.now .dot, .reveal .np-timeline .ev.fragment.current-fragment .dot { background: var(--accent); border-color: var(--accent); transform: scale(1.15); }
+.np-timeline .ev.now .what, .reveal .np-timeline .ev.fragment.current-fragment .what { color: var(--accent); }
+.reveal .np-timeline:has(.current-fragment) .ev.now:not(.current-fragment) .dot { background: var(--ground); border-color: var(--ink-muted); transform: none; }
+.reveal .np-timeline:has(.current-fragment) .ev.now:not(.current-fragment) .what { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .np-timeline * { transition: none !important; } }
+.np-title .left .caption { line-height: 1.45 !important; display: block; }

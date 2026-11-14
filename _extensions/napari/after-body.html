@@ -1,0 +1,43 @@
+<script>
+(function () {
+  var d = document.documentElement;
+  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function paint() {
+    var logo = document.querySelector('.slide-logo');
+    if (logo && logo.dataset.dark) logo.src = d.dataset.theme === 'light' ? logo.dataset.light : logo.dataset.dark;
+  }
+  function toggleTheme() { d.dataset.theme = d.dataset.theme === 'light' ? 'dark' : 'light'; save('np-theme', d.dataset.theme); paint(); }
+  var logo = document.querySelector('.slide-logo');
+  if (logo) { logo.dataset.dark = logo.getAttribute('src'); logo.dataset.light = logo.getAttribute('src').replace('-dark.svg', '-light.svg'); }
+  function bind() {
+    if (!window.Reveal || !Reveal.isReady()) return setTimeout(bind, 100);
+    Reveal.addKeyBinding({ keyCode: 84, key: 'T', description: 'Toggle light / dark' }, toggleTheme);
+  }
+  function chrome() { var s = Reveal.getCurrentSlide(); document.querySelector('.reveal').classList.toggle('has-no-chrome', !!(s && (s.classList.contains('no-chrome') || s.classList.contains('np-title')))); }
+  (function wait() { if (!window.Reveal || !Reveal.isReady()) return setTimeout(wait, 100); chrome(); Reveal.on('slidechanged', chrome); })();
+  function buildChrome() {
+    var rv = document.querySelector('.reveal'), row = document.createElement('div'); row.className = 'np-chrome';
+    ['.footer', '.slide-number', '.slide-logo'].forEach(function (sel) { var el = rv.querySelector(':scope > ' + sel) || rv.querySelector(sel); if (el) row.appendChild(el); });
+    rv.appendChild(row);
+  }
+  (function waitChrome() { if (!window.Reveal || !Reveal.isReady() || !document.querySelector('.reveal .slide-number')) return setTimeout(waitChrome, 100); buildChrome(); })();
+  bind(); paint();
+
+  // Live demos: ask the local runner (uv run talk-runner) to start a script; fall back to the recording.
+  var RUNNER = 'http://127.0.0.1:8765';
+  fetch(RUNNER + '/ping', { mode: 'cors' }).then(function (r) { return r.ok; }).catch(function () { return false; })
+    .then(function (online) {
+      document.querySelectorAll('[data-demo]').forEach(function (el) {
+        var btn = el.querySelector('.launch'), status = el.querySelector('.runner-status'), video = el.querySelector('video');
+        if (online) {
+          status.textContent = 'Runner connected: napari opens on this machine.';
+          btn.addEventListener('click', function () { fetch(RUNNER + '/run/' + el.dataset.demo, { method: 'POST' }); });
+        } else {
+          btn.hidden = true;
+          status.textContent = 'No local runner (e.g. the hosted copy), so the recording plays instead.';
+          if (video) { video.hidden = false; }
+        }
+      });
+    });
+})();
+</script>

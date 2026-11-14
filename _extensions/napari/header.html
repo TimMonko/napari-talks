@@ -1,0 +1,10 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+  // light / dark before first paint: ?theme=light, else last choice in this browser, else dark
+  (function () {
+    var d = document.documentElement, t = 'dark';
+    try { t = localStorage.getItem('np-theme') || t; } catch (e) {}
+    d.dataset.theme = new URLSearchParams(location.search).get('theme') || t;
+  })();
+</script>
