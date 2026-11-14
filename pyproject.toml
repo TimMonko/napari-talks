@@ -1,0 +1,23 @@
+[project]
+name = "napari-talks"
+version = "0.1.0"
+description = "Slides for talks about napari"
+requires-python = ">=3.11"
+# what a talk needs to render (plot cells run at render time)
+dependencies = [
+    "jupyter",
+    "matplotlib",
+    "pandas",
+]
+
+[dependency-groups]
+# local only: live demos and regenerating napari screenshots
+demos = [
+    "napari[pyqt6]",
+    "scikit-image",
+    "imageio",
+    "pooch",
+]
+
+[tool.uv]
+package = false

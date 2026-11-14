@@ -1,0 +1,12 @@
+project:
+  type: default
+  output-dir: _site
+  render:
+    - index.qmd
+    - talks/*/index.qmd
+  resources:
+    - shared/media/
+    - _extensions/napari/logos/
+
+execute:
+  freeze: false   # CI re-runs every plot cell, so the published plots always match the data in the repo
