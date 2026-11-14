@@ -1,0 +1,44 @@
+# napari talk plots, dark slides (ground #1b1c21, one step darker than the napari app background #262930)
+# Sized for a 1280x720 slide: figure 11.2 x 5.2 in at 100 dpi fills the content area.
+figure.figsize      : 11.2, 5.2
+figure.dpi          : 100
+savefig.dpi         : 200
+savefig.transparent : False
+figure.facecolor    : 1b1c21
+axes.facecolor      : 1b1c21
+savefig.facecolor   : 1b1c21
+
+font.family         : IBM Plex Sans, DejaVu Sans
+font.size           : 16
+text.color          : f0f1f2
+axes.labelcolor     : 9ca4af
+axes.labelsize      : 16
+axes.titlesize      : 0      # titles live on the slide, not in the figure
+xtick.color         : 9ca4af
+ytick.color         : 9ca4af
+xtick.labelsize     : 15
+ytick.labelsize     : 15
+
+axes.edgecolor      : 565f6c
+axes.linewidth      : 1
+axes.spines.top     : False
+axes.spines.right   : False
+axes.spines.left    : False
+axes.grid           : True
+axes.grid.axis      : y
+axes.axisbelow      : True
+grid.color          : 424a54
+grid.linewidth      : 0.8
+xtick.major.size    : 0
+ytick.major.size    : 0
+ytick.major.pad     : 8
+
+lines.linewidth     : 2.5
+lines.markersize    : 8
+patch.linewidth     : 0
+legend.frameon      : False
+legend.fontsize     : 15
+legend.labelcolor   : f0f1f2
+
+# categorical order: blue, gold, violet, teal (validated vs #1b1c21); context grey = 565f6c
+axes.prop_cycle     : cycler('color', ['009bf2', 'b98a14', '8f72d4', '1f9e80'])
