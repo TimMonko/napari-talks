@@ -1,0 +1,286 @@
+# napari team roster for the team map (shared/demos/team_map.py).
+# Names, handles and roles come from napari/docs docs/community/team.md
+# (refresh: `pixi run -e demos team-roster`; hand-filled fields are kept).
+# Fill `place` ("Kyoto", "Bavaria, Germany", "Japan") and `precision`
+# (city | region | country), then `pixi run -e demos team-geocode`.
+# lat/lon are rounded; `photo` is a path under shared/data/ for anyone
+# without a GitHub avatar. Leave `place` empty to appear off the map.
+
+[[person]]
+handle = "bnorthan"
+name = "Brian Northan"
+roles = ["sc"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "ctrueden"
+name = "Curtis Rueden"
+roles = ["sc"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "DragaDoncila"
+name = "Draga Doncila Pop"
+roles = ["sc", "core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "jni"
+name = "Juan Nunez-Iglesias"
+roles = ["sc", "core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "royerloic"
+name = "Loic Royer"
+roles = []
+emeritus = ["sc", "core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "sofroniewn"
+name = "Nicholas Sofroniew"
+roles = []
+emeritus = ["sc", "core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "tlambert03"
+name = "Talley Lambert"
+roles = []
+emeritus = ["sc", "core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "Aniketsy"
+name = "Aniket Singh Yadav"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "aganders3"
+name = "Ashley Anderson"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "carlosmariorr"
+name = "Carlos M. Rodríguez-Reza"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "willingc"
+name = "Carol Willing"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "Czaki"
+name = "Grzegorz Bokota"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "jacopoabramo"
+name = "Jacopo Abramo"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "jaimergp"
+name = "Jaime Rodríguez-Guerra"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "kevinyamauchi"
+name = "Kevin Yamauchi"
+roles = ["core"]
+emeritus = ["sc"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "kne42"
+name = "Kira Evans"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "kephale"
+name = "Kyle Harrington"
+roles = ["core"]
+emeritus = ["sc"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "brisvag"
+name = "Lorenzo Gaifas"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "melissawm"
+name = "Melissa Weber Mendonça"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "psobolewskiPhD"
+name = "Peter Sobolewski"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "TimMonko"
+name = "Tim Monko"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "melonora"
+name = "Wouter-Michiel Vierdag"
+roles = ["core"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "AhmetCanSolak"
+name = "Ahmet Can Solak"
+roles = []
+emeritus = ["core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "alisterburt"
+name = "Alister Burt"
+roles = []
+emeritus = ["core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "andy-sweet"
+name = "Andy Sweet"
+roles = []
+emeritus = ["core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "GenevieveBuckley"
+name = "Genevieve Buckley"
+roles = []
+emeritus = ["core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "justinelarsen"
+name = "Justine Larsen"
+roles = []
+emeritus = ["core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "lucyleeow"
+name = "Lucy Liu"
+roles = []
+emeritus = ["core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "shanaxel42"
+name = "Shannon Axelrod"
+roles = []
+emeritus = ["core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "liu-ziyang"
+name = "Ziyang Liu"
+roles = []
+emeritus = ["core"]
+place = ""
+precision = ""
+photo = ""
+
+[[person]]
+handle = "matthiasschabel"
+name = "Matthias Schabel"
+roles = ["triage"]
+emeritus = []
+place = ""
+precision = ""
+photo = ""
