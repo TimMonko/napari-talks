@@ -9,6 +9,7 @@ dependencies = [
     "matplotlib",
     "pandas",
     "nps",
+    "segno>=1.6.6,<2",
 ]
 
 [dependency-groups]
