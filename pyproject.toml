@@ -2,12 +2,13 @@
 name = "napari-talks"
 version = "0.1.0"
 description = "Slides for talks about napari"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 # what a talk needs to render (plot cells run at render time)
 dependencies = [
     "jupyter",
     "matplotlib",
     "pandas",
+    "nps",
 ]
 
 [dependency-groups]
@@ -19,5 +20,28 @@ demos = [
     "pooch",
 ]
 
-[tool.uv]
-package = false
+# pixi manages every environment: dependency groups map to features of the
+# same name; conda-only tools (Quarto) come from conda-forge.
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
+
+[tool.pixi.dependencies]
+python = "3.13.*"
+quarto = ">=1.11"
+
+[tool.pixi.pypi-dependencies]
+# nps is private until its site is up; switch to a git dependency then
+nps = { path = "../nps", editable = true }
+
+[tool.pixi.tasks]
+render = "quarto render"
+preview = { cmd = "quarto preview", description = "Preview the site; pass a talk, e.g. talks/2026-11-cbias/index.qmd" }
+
+[tool.pixi.feature.demos.tasks]
+runner = { cmd = "python shared/runner/runner.py", description = "Local server so demo slides can launch napari" }
+screenshots = "python shared/demos/screenshots.py"
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+demos = { features = ["demos"], solve-group = "default" }

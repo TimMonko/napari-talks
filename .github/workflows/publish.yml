@@ -18,28 +18,31 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: napari-talks
     steps:
       - uses: actions/checkout@v4
-
-      - uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.12"
+          path: napari-talks
 
-      - name: Install render dependencies
-        run: uv sync
-
-      - uses: quarto-dev/quarto-actions/setup@v2
+      # nps is a path dependency (../nps) until it is published as a git dependency
+      - uses: actions/checkout@v4
         with:
-          version: 1.6.43
+          repository: TimMonko/nps
+          path: nps
+
+      - uses: prefix-dev/setup-pixi@v0.11.3
+        with:
+          manifest-path: napari-talks/pyproject.toml
+          cache: true
 
       - name: Render all talks
-        run: uv run quarto render
-        env:
-          QUARTO_PYTHON: .venv/bin/python
+        run: pixi run render
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: napari-talks/_site
 
   deploy:
     if: github.event_name != 'pull_request'

@@ -1,6 +1,6 @@
 """Regenerate napari screenshots for slides, in both themes, from code.
 
-    uv run shared/demos/screenshots.py            # writes shared/media/generated/*.png
+    pixi run -e demos screenshots                 # writes shared/media/generated/*.png
 
 Every screenshot in a talk should come from a script like this, so it can be
 redone when napari's UI changes instead of re-cropping by hand.

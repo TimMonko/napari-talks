@@ -1,6 +1,6 @@
 """Local demo runner: lets a slide start a napari script on the presenter's laptop.
 
-    uv run python shared/runner/runner.py          # listens on 127.0.0.1:8765
+    pixi run -e demos runner                        # listens on 127.0.0.1:8765
 
 Only scripts in shared/demos/ can be started, by file name, and only from the
 origins listed below. Nothing listens beyond localhost.
