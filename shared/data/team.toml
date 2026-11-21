@@ -12,6 +12,8 @@ name = "Brian Northan"
 roles = ["sc"]
 emeritus = []
 place = "Albany, New York, USA"
+lat = 42.5
+lon = -74.0
 photo = ""
 
 [[person]]
@@ -20,6 +22,8 @@ name = "Curtis Rueden"
 roles = ["sc"]
 emeritus = []
 place = "Madison, Wisconsin, USA"
+lat = 43.0
+lon = -89.5
 photo = ""
 
 [[person]]
@@ -28,6 +32,8 @@ name = "Draga Doncila Pop"
 roles = ["sc", "core"]
 emeritus = []
 place = "Melbourne, Victoria, Australia"
+lat = -38.0
+lon = 145.0
 photo = ""
 
 [[person]]
@@ -36,6 +42,8 @@ name = "Juan Nunez-Iglesias"
 roles = ["sc", "core"]
 emeritus = []
 place = "Melbourne, Victoria, Australia"
+lat = -38.0
+lon = 145.0
 photo = ""
 
 [[person]]
@@ -44,6 +52,8 @@ name = "Loic Royer"
 roles = []
 emeritus = ["sc", "core"]
 place = "San Francisco, California, USA"
+lat = 38.0
+lon = -122.5
 photo = ""
 
 [[person]]
@@ -52,6 +62,8 @@ name = "Nicholas Sofroniew"
 roles = []
 emeritus = ["sc", "core"]
 place = "San Francisco, California, USA"
+lat = 38.0
+lon = -122.5
 photo = ""
 
 [[person]]
@@ -60,6 +72,8 @@ name = "Talley Lambert"
 roles = []
 emeritus = ["sc", "core"]
 place = "Milan, Italy"
+lat = 45.5
+lon = 9.0
 photo = ""
 
 [[person]]
@@ -68,6 +82,8 @@ name = "Aniket Singh Yadav"
 roles = ["core"]
 emeritus = []
 place = "New Delhi, India"
+lat = 28.5
+lon = 77.0
 photo = ""
 
 [[person]]
@@ -76,6 +92,8 @@ name = "Ashley Anderson"
 roles = ["core"]
 emeritus = []
 place = "New Haven, Connecticut, USA"
+lat = 41.5
+lon = -73.0
 photo = ""
 
 [[person]]
@@ -84,6 +102,8 @@ name = "Carlos M. Rodríguez-Reza"
 roles = ["core"]
 emeritus = []
 place = "Kyoto, Japan"
+lat = 35.0
+lon = 136.0
 photo = ""
 
 [[person]]
@@ -92,6 +112,8 @@ name = "Carol Willing"
 roles = ["core"]
 emeritus = []
 place = "San Diego, California, USA"
+lat = 32.5
+lon = -117.0
 photo = ""
 
 [[person]]
@@ -100,6 +122,8 @@ name = "Grzegorz Bokota"
 roles = ["core"]
 emeritus = []
 place = "Warsaw, Poland"
+lat = 52.0
+lon = 21.0
 photo = ""
 
 [[person]]
@@ -108,6 +132,8 @@ name = "Jacopo Abramo"
 roles = ["core"]
 emeritus = []
 place = "Genoa, Italy"
+lat = 44.5
+lon = 9.0
 photo = ""
 
 [[person]]
@@ -116,6 +142,8 @@ name = "Jaime Rodríguez-Guerra"
 roles = ["core"]
 emeritus = []
 place = "Berlin, Germany"
+lat = 52.5
+lon = 13.5
 photo = ""
 
 [[person]]
@@ -124,6 +152,8 @@ name = "Kevin Yamauchi"
 roles = ["core"]
 emeritus = ["sc"]
 place = "Zurich, Switzerland"
+lat = 47.5
+lon = 8.5
 photo = ""
 
 [[person]]
@@ -132,6 +162,8 @@ name = "Kira Evans"
 roles = ["core"]
 emeritus = []
 place = "Carlton, Victoria, Australia"
+lat = -38.0
+lon = 145.0
 photo = ""
 
 [[person]]
@@ -140,6 +172,8 @@ name = "Kyle Harrington"
 roles = ["core"]
 emeritus = ["sc"]
 place = "San Francisco, California, USA"
+lat = 38.0
+lon = -122.5
 photo = ""
 
 [[person]]
@@ -148,6 +182,8 @@ name = "Lorenzo Gaifas"
 roles = ["core"]
 emeritus = []
 place = "Grenoble, France"
+lat = 45.0
+lon = 5.5
 photo = ""
 
 [[person]]
@@ -156,6 +192,8 @@ name = "Melissa Weber Mendonça"
 roles = ["core"]
 emeritus = []
 place = "Florianopolis, Santa Catarina, Brazil"
+lat = -27.5
+lon = -48.5
 photo = ""
 
 [[person]]
@@ -164,6 +202,8 @@ name = "Peter Sobolewski"
 roles = ["core"]
 emeritus = []
 place = "Farmington, Connecticut, USA"
+lat = 41.5
+lon = -73.0
 photo = ""
 
 [[person]]
@@ -172,6 +212,8 @@ name = "Tim Monko"
 roles = ["core"]
 emeritus = []
 place = "Minneapolis, Minnesota, USA"
+lat = 45.0
+lon = -93.5
 photo = ""
 
 [[person]]
@@ -180,6 +222,8 @@ name = "Wouter-Michiel Vierdag"
 roles = ["core"]
 emeritus = []
 place = "Heidelberg, Germany"
+lat = 49.5
+lon = 8.5
 photo = ""
 
 [[person]]
@@ -188,6 +232,8 @@ name = "Ahmet Can Solak"
 roles = []
 emeritus = ["core"]
 place = "San Francisco, California, USA"
+lat = 38.0
+lon = -122.5
 photo = ""
 
 [[person]]
@@ -196,6 +242,8 @@ name = "Alister Burt"
 roles = []
 emeritus = ["core"]
 place = "San Francisco, California, USA"
+lat = 38.0
+lon = -122.5
 photo = ""
 
 [[person]]
@@ -204,6 +252,8 @@ name = "Andy Sweet"
 roles = []
 emeritus = ["core"]
 place = "Rochester, Minnesota, USA"
+lat = 44.0
+lon = -92.5
 photo = ""
 
 [[person]]
@@ -212,6 +262,8 @@ name = "Genevieve Buckley"
 roles = []
 emeritus = ["core"]
 place = "Melbourne, Victoria, Australia"
+lat = -38.0
+lon = 145.0
 photo = ""
 
 [[person]]
@@ -220,6 +272,8 @@ name = "Justine Larsen"
 roles = []
 emeritus = ["core"]
 place = "San Francisco, California, USA"
+lat = 38.0
+lon = -122.5
 photo = ""
 
 [[person]]
@@ -228,6 +282,8 @@ name = "Lucy Liu"
 roles = []
 emeritus = ["core"]
 place = "Melbourne, Victoria, Australia"
+lat = -38.0
+lon = 145.0
 photo = ""
 
 [[person]]
@@ -236,6 +292,8 @@ name = "Shannon Axelrod"
 roles = []
 emeritus = ["core"]
 place = "Los Angeles, California, USA"
+lat = 34.0
+lon = -118.5
 photo = ""
 
 [[person]]
@@ -244,6 +302,8 @@ name = "Ziyang Liu"
 roles = []
 emeritus = ["core"]
 place = "San Jose, California, USA"
+lat = 37.5
+lon = -122.0
 photo = ""
 
 [[person]]
@@ -252,4 +312,6 @@ name = "Matthias Schabel"
 roles = ["triage"]
 emeritus = []
 place = "Portland, Oregon, USA"
+lat = 45.5
+lon = -122.5
 photo = ""

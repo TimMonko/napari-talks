@@ -109,22 +109,32 @@ def roster() -> None:
 
 
 def geocode() -> None:
-    from geopy.geocoders import Nominatim
+    from geopy.extra.rate_limiter import RateLimiter
+    from geopy.geocoders import Photon
 
-    # only the place text is sent, never a name or handle
-    geo = Nominatim(user_agent="napari-team-map")
+    # Photon (photon.komoot.io, OpenStreetMap data, no key). Only the place
+    # text is sent, never a name or handle. One request per second; each
+    # place is looked up once, and the file is saved after every lookup so
+    # a failure keeps what was found.
+    geo = Photon(user_agent="napari-team-map")
+    lookup = RateLimiter(geo.geocode, min_delay_seconds=1.1, max_retries=3, error_wait_seconds=10)
     people = load()
+    found = {p["place"]: (p["lat"], p["lon"]) for p in people if "lat" in p}
     for p in people:
         if not p.get("place") or "lat" in p:
             continue
-        loc = geo.geocode(p["place"], timeout=10)
-        if loc is None:
-            print(f"  not found: {p['place']!r} ({p['handle']})")
-            continue
-        p["lat"] = round(round(loc.latitude / ROUND_DEG) * ROUND_DEG, 1)
-        p["lon"] = round(round(loc.longitude / ROUND_DEG) * ROUND_DEG, 1)
+        if p["place"] not in found:
+            loc = lookup(p["place"], timeout=10)
+            if loc is None:
+                print(f"  not found: {p['place']!r} ({p['handle']})")
+                continue
+            found[p["place"]] = (
+                round(round(loc.latitude / ROUND_DEG) * ROUND_DEG, 1),
+                round(round(loc.longitude / ROUND_DEG) * ROUND_DEG, 1),
+            )
+        p["lat"], p["lon"] = found[p["place"]]
         print(f"  {p['place']}: {p['lat']}, {p['lon']}")
-    save(people)
+        save(people)
 
 
 def avatars(size: int = 160) -> None:
