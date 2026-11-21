@@ -97,7 +97,7 @@ from grants (developers-in-residence, community managers, operations), plus
 contracted work with Quansight; most contributions are volunteer.
 :::
 
-## People keep arriving: 2026 brought the most new contributors since 2021
+## 2026 is our biggest year yet: 93 contributors, 61 of them new
 
 ```{python}
 #| output: asis
@@ -153,29 +153,41 @@ show(plots.new_plugins_by_year(data.new_plugins_by_year()), "new-plugins")
 
 [napari plugins on PyPI · data: timmonko/nps]{.caption}
 
-## The ecosystem grows; the maintained part holds steady
+## Half of the living plugins shipped a release in the last six months
 
 ```{python}
 #| output: asis
-show(plots.plugin_maintenance(data.plugin_maintenance()), "maintenance")
+show(plots.plugin_status(data.plugin_status()), "plugin-status")
 ```
 
-[active = a release in the trailing 6 months · data: timmonko/nps]{.caption}
+[living = a release in the past 2 years; that share was 35% in mid-2024 · data: timmonko/nps]{.caption}
 
 ::: {.notes}
-Around 130 to 200 plugins are actively released at any time, while the total
-keeps climbing. Many plugins are one-off thesis projects. That's fine, but it
-means the ecosystem needs maintainers, not just authors.
+Every plugin ever released, stacked by when it last shipped. The top is the
+total, still climbing. The blue band is plugins released in the last six
+months: flat at 120-150 for years, now about 200. Of plugins that have done
+anything in two years, the share releasing recently went from about a third
+in 2024 to about half now. The grey band is the long tail of one-off thesis
+plugins. That's fine, but it means the ecosystem needs maintainers, not just
+authors.
 :::
 
-## napari is downloaded about 1.7 million times a year
+## People installing napari themselves: nearly 4× since 2022
 
 ```{python}
 #| output: asis
-show(plots.pypi_downloads(data.pypi_downloads(), by="year"), "downloads")
+desktop = data.pypi_downloads_by_system()
+show(plots.pypi_downloads_desktop(desktop[desktop["month"] >= "2021-01-01"]), "downloads-desktop")
 ```
 
-[PyPI downloads · data: ClickHouse public PyPI dataset]{.caption}
+[PyPI downloads on Windows and macOS; Linux left out because CI runs there · data: ClickHouse public PyPI dataset]{.caption}
+
+::: {.notes}
+Total downloads are about 1.5 million a year, but most of that is Linux:
+CI machines and cloud builds, with one-month spikes of a million or more.
+Windows and macOS are mostly people on their own laptops, and those went from
+about 110 thousand in 2022 to over 400 thousand so far this year.
+:::
 
 # work with us {.statement}
 
@@ -201,7 +213,7 @@ about your work than find it by accident.
 steps = [
     ("say hi", "napari.zulipchat.com", "https://napari.zulipchat.com"),
     ("come to a meeting", "bit.ly/napari-meetings", "https://bit.ly/napari-meetings"),
-    ("pick an issue", "github.com/napari/napari/contribute", "https://github.com/napari/napari/contribute"),
+    ("start contributing", "napari.org/stable/developers/contributing", "https://napari.org/stable/developers/contributing/index.html"),
 ]
 print('::: {style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:16px;text-align:center"}\n')
 for i, (what, label, url) in enumerate(steps):
@@ -211,8 +223,8 @@ print(":::\n")
 
 ::: {.notes}
 Lowest bar first: introduce yourself on Zulip and tell us what you work on.
-Then come to a community meeting. When you're ready, GitHub's contribute page
-lists good first issues.
+Then come to a community meeting. When you're ready, the contributing guide
+walks you from a dev install to your first PR, and points at good first issues.
 :::
 
 {{< include ../../shared/slides/community.qmd >}}
