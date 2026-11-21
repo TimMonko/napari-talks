@@ -149,6 +149,23 @@ GitHub is where it lands. Meetings are on the public calendar in several time
 zones.
 :::
 
+## A first PR: five reviewers, merged in ten days
+
+![](../../shared/media/pr-9107.png){width=100%}
+
+::: {style="display:flex;gap:32px;align-items:center;margin-top:16px"}
+![](../../shared/media/pr-9107-participants.png){width=360}
+
+[a newcomer's first napari PR, opened 2026-06-27, merged 2026-07-07, shipped in 0.8.0a1]{.caption}
+:::
+
+::: {.notes}
+This is what contributing looks like. A newcomer picked up an open issue,
+opened their first PR, and five people from across the team reviewed it,
+including a steering council member. Ten days later it was merged and in the next release. Eight
+people took part. You don't need permission to start.
+:::
+
 # plugins and ecosystem {.statement}
 
 ## Over 700 plugins, and 2026 is already the biggest year
