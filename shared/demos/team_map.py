@@ -23,12 +23,12 @@ photos on a table: tiles that sit too close push each other apart along
 the real direction between them, while a weak spring keeps each near
 home, so neighbours overlap a little and keep their relative positions.
 
-    pixi run -e demos team-map   # also writes shared/media/generated/team-map.png
+    pixi run -e demos team-map   # also writes shared/media/generated/team-map.jpg
 
-Before showing the viewer, ``export_figure`` saves the map for slides. It
+Before showing the viewer, ``export_figure`` renders the map for slides. It
 crops to the extent of the layers (the whole globe, so the theme doesn't
 show) and renders at the finest layer's resolution (the Blue Marble image,
-15 px per degree), so 5400 x 2700.
+15 px per degree), so 5400 x 2700; saved as JPEG, since it is a photo.
 
 Map: NASA Blue Marble Next Generation (July 2004), public domain. Borders:
 Natural Earth 1:110m admin-0 countries, public domain.
@@ -295,5 +295,6 @@ def main() -> napari.Viewer:
 if __name__ == '__main__':
     viewer = main()
     FIGURES.mkdir(parents=True, exist_ok=True)
-    viewer.export_figure(str(FIGURES / 'team-map.png'))
+    figure = viewer.export_figure()[..., :3]  # RGBA -> RGB for JPEG
+    iio.imwrite(FIGURES / 'team-map.jpg', figure, quality=90)
     napari.run()

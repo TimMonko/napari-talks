@@ -63,19 +63,18 @@ builds it, how decisions get made, and where you fit in.
 
 ```{python}
 #| output: asis
-if (MEDIA / "team-map-dark.png").exists():
-    for mode in ("dark", "light"):
-        print(f"![](../../shared/media/generated/team-map-{mode}.png){{.only-{mode} .fill}}\n")
+if (MEDIA / "team-map.jpg").exists():
+    print("![](../../shared/media/generated/team-map.jpg){.fill}\n")
 else:
-    print("[team map screenshot goes here (shared/media/generated/team-map-{dark,light}.png)]{.muted}\n")
+    print("[team map goes here: `pixi run -e demos team-map` writes shared/media/generated/team-map.jpg]{.muted}\n")
 ```
 
 [steering council · core team · triage · emeritus, drawn in napari]{.caption}
 
 ::: {.notes}
-Every face is a team member, placed roughly where they live. Rings show roles.
-This map is itself a napari example: an Image layer per group and a Shapes
-layer for roles.
+Every face is a team member, placed near where they live. Frames show roles.
+This map is itself a napari example: a NASA Blue Marble Image, country
+borders as Shapes, an avatar Image per group, all in latitude/longitude.
 :::
 
 ## Consensus first, a council as backstop
