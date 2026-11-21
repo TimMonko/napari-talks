@@ -20,3 +20,6 @@ __pycache__/
 .pixi/
 
 **/*.quarto_ipynb
+
+# team map: avatars are re-fetched from GitHub
+shared/data/avatars/

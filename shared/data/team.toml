@@ -1,0 +1,317 @@
+# napari team roster for the team map (shared/demos/team_map.py).
+# Names, handles and roles come from napari/docs docs/community/team.md
+# (refresh: `pixi run -e demos team-roster`; hand-filled fields are kept).
+# Fill `place` with a city ("Kyoto, Japan"), then
+# `pixi run -e demos team-geocode`.
+# `photo` is a path under shared/data/ to use instead of the GitHub
+# avatar. People with an empty `place` are left off the map.
+
+[[person]]
+handle = "bnorthan"
+name = "Brian Northan"
+roles = ["sc"]
+emeritus = []
+place = "Albany, New York, USA"
+lat = 42.684
+lon = -73.848
+photo = ""
+
+[[person]]
+handle = "ctrueden"
+name = "Curtis Rueden"
+roles = ["sc"]
+emeritus = []
+place = "Madison, Wisconsin, USA"
+lat = 43.08
+lon = -89.431
+photo = ""
+
+[[person]]
+handle = "DragaDoncila"
+name = "Draga Doncila Pop"
+roles = ["sc", "core"]
+emeritus = []
+place = "Melbourne, Victoria, Australia"
+lat = -37.814
+lon = 144.963
+photo = "photos/DragaDoncila.png"
+
+[[person]]
+handle = "jni"
+name = "Juan Nunez-Iglesias"
+roles = ["sc", "core"]
+emeritus = []
+place = "Melbourne, Victoria, Australia"
+lat = -37.814
+lon = 144.963
+photo = ""
+
+[[person]]
+handle = "royerloic"
+name = "Loic Royer"
+roles = []
+emeritus = ["sc", "core"]
+place = "San Francisco, California, USA"
+lat = 37.787
+lon = -122.495
+photo = ""
+
+[[person]]
+handle = "sofroniewn"
+name = "Nicholas Sofroniew"
+roles = []
+emeritus = ["sc", "core"]
+place = "San Francisco, California, USA"
+lat = 37.787
+lon = -122.495
+photo = ""
+
+[[person]]
+handle = "tlambert03"
+name = "Talley Lambert"
+roles = []
+emeritus = ["sc", "core"]
+place = "Milan, Italy"
+lat = 45.464
+lon = 9.19
+photo = ""
+
+[[person]]
+handle = "Aniketsy"
+name = "Aniket Singh Yadav"
+roles = ["core"]
+emeritus = []
+place = "New Delhi, India"
+lat = 28.614
+lon = 77.209
+photo = ""
+
+[[person]]
+handle = "aganders3"
+name = "Ashley Anderson"
+roles = ["core"]
+emeritus = []
+place = "New Haven, Connecticut, USA"
+lat = 41.309
+lon = -72.896
+photo = "photos/aganders3.png"
+
+[[person]]
+handle = "carlosmariorr"
+name = "Carlos M. Rodríguez-Reza"
+roles = ["core"]
+emeritus = []
+place = "Kyoto, Japan"
+lat = 35.012
+lon = 135.768
+photo = ""
+
+[[person]]
+handle = "willingc"
+name = "Carol Willing"
+roles = ["core"]
+emeritus = []
+place = "San Diego, California, USA"
+lat = 32.542
+lon = -117.036
+photo = ""
+
+[[person]]
+handle = "Czaki"
+name = "Grzegorz Bokota"
+roles = ["core"]
+emeritus = []
+place = "Warsaw, Poland"
+lat = 52.232
+lon = 21.007
+photo = ""
+
+[[person]]
+handle = "jacopoabramo"
+name = "Jacopo Abramo"
+roles = ["core"]
+emeritus = []
+place = "Genoa, Italy"
+lat = 44.407
+lon = 8.934
+photo = ""
+
+[[person]]
+handle = "jaimergp"
+name = "Jaime Rodríguez-Guerra"
+roles = ["core"]
+emeritus = []
+place = "Berlin, Germany"
+lat = 52.517
+lon = 13.395
+photo = ""
+
+[[person]]
+handle = "kevinyamauchi"
+name = "Kevin Yamauchi"
+roles = ["core"]
+emeritus = ["sc"]
+place = "Zurich, Switzerland"
+lat = 47.374
+lon = 8.541
+photo = "photos/kevinyamauchi.png"
+
+[[person]]
+handle = "kne42"
+name = "Kira Evans"
+roles = ["core"]
+emeritus = []
+place = "Carlton, Victoria, Australia"
+lat = -37.8
+lon = 144.968
+photo = "photos/kne42.png"
+
+[[person]]
+handle = "kephale"
+name = "Kyle Harrington"
+roles = ["core"]
+emeritus = ["sc"]
+place = "San Francisco, California, USA"
+lat = 37.787
+lon = -122.495
+photo = ""
+
+[[person]]
+handle = "brisvag"
+name = "Lorenzo Gaifas"
+roles = ["core"]
+emeritus = []
+place = "Grenoble, France"
+lat = 45.188
+lon = 5.736
+photo = ""
+
+[[person]]
+handle = "melissawm"
+name = "Melissa Weber Mendonça"
+roles = ["core"]
+emeritus = []
+place = "Florianopolis, Santa Catarina, Brazil"
+lat = -27.597
+lon = -48.55
+photo = ""
+
+[[person]]
+handle = "psobolewskiPhD"
+name = "Peter Sobolewski"
+roles = ["core"]
+emeritus = []
+place = "Farmington, Connecticut, USA"
+lat = 41.72
+lon = -72.832
+photo = ""
+
+[[person]]
+handle = "TimMonko"
+name = "Tim Monko"
+roles = ["core"]
+emeritus = []
+place = "Minneapolis, Minnesota, USA"
+lat = 45.024
+lon = -93.296
+photo = ""
+
+[[person]]
+handle = "melonora"
+name = "Wouter-Michiel Vierdag"
+roles = ["core"]
+emeritus = []
+place = "Heidelberg, Germany"
+lat = 49.409
+lon = 8.695
+photo = ""
+
+[[person]]
+handle = "AhmetCanSolak"
+name = "Ahmet Can Solak"
+roles = []
+emeritus = ["core"]
+place = "San Francisco, California, USA"
+lat = 37.787
+lon = -122.495
+photo = ""
+
+[[person]]
+handle = "alisterburt"
+name = "Alister Burt"
+roles = []
+emeritus = ["core"]
+place = "San Francisco, California, USA"
+lat = 37.787
+lon = -122.495
+photo = ""
+
+[[person]]
+handle = "andy-sweet"
+name = "Andy Sweet"
+roles = []
+emeritus = ["core"]
+place = "Rochester, Minnesota, USA"
+lat = 43.997
+lon = -92.464
+photo = ""
+
+[[person]]
+handle = "GenevieveBuckley"
+name = "Genevieve Buckley"
+roles = []
+emeritus = ["core"]
+place = "Melbourne, Victoria, Australia"
+lat = -37.814
+lon = 144.963
+photo = ""
+
+[[person]]
+handle = "justinelarsen"
+name = "Justine Larsen"
+roles = []
+emeritus = ["core"]
+place = "San Francisco, California, USA"
+lat = 37.787
+lon = -122.495
+photo = ""
+
+[[person]]
+handle = "lucyleeow"
+name = "Lucy Liu"
+roles = []
+emeritus = ["core"]
+place = "Melbourne, Victoria, Australia"
+lat = -37.814
+lon = 144.963
+photo = ""
+
+[[person]]
+handle = "shanaxel42"
+name = "Shannon Axelrod"
+roles = []
+emeritus = ["core"]
+place = "Los Angeles, California, USA"
+lat = 34.139
+lon = -118.354
+photo = ""
+
+[[person]]
+handle = "liu-ziyang"
+name = "Ziyang Liu"
+roles = []
+emeritus = ["core"]
+place = "San Jose, California, USA"
+lat = 37.356
+lon = -121.892
+photo = ""
+
+[[person]]
+handle = "matthiasschabel"
+name = "Matthias Schabel"
+roles = ["triage"]
+emeritus = []
+place = "Portland, Oregon, USA"
+lat = 45.625
+lon = -122.737
+photo = ""

@@ -19,6 +19,7 @@ demos = [
     "scikit-image",
     "imageio",
     "pooch",
+    "geopy",  # team map: geocode each place once
 ]
 
 # pixi manages every environment: dependency groups map to features of the
@@ -42,6 +43,10 @@ preview = { cmd = "quarto preview", description = "Preview the site; pass a talk
 [tool.pixi.feature.demos.tasks]
 runner = { cmd = "python shared/runner/runner.py", description = "Local server so demo slides can launch napari" }
 screenshots = "python shared/demos/screenshots.py"
+team-roster = { cmd = "python shared/demos/team_data.py roster", description = "Parse napari/docs team.md into shared/data/team.toml" }
+team-geocode = { cmd = "python shared/demos/team_data.py geocode", description = "Fill lat/lon for each place in team.toml" }
+team-avatars = { cmd = "python shared/demos/team_data.py avatars", description = "Cache GitHub avatars into shared/data/avatars" }
+team-map = { cmd = "python shared/demos/team_map.py", description = "Open the napari team map; writes shared/media/generated/team-map.png" }
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
