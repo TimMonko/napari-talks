@@ -4,9 +4,10 @@ The napari team on a world map
 
 Show where the napari team is, with nothing but 2D layers: a satellite
 image of the Earth as an Image, country borders as a Shapes layer of paths,
-one RGBA Image *mosaic* of square avatars per team group, and a Shapes
-layer of square frames (one frame per role) whose features show in the
-status bar when you hover over a person with that layer selected.
+one RGBA Image *mosaic* of square avatars per team group, each with a
+coloured frame per role drawn into its pixels, and an invisible Shapes
+layer of one square per person whose features show in the status bar when
+you hover over a person with that layer selected.
 
 All layers share one world coordinate system, (latitude, longitude) in
 degrees, set through ``scale`` and ``translate`` as in the xarray lat/lon
@@ -14,10 +15,10 @@ example: the satellite image is an equirectangular grid, so it needs no
 reprojection. Latitude increases upwards, so the camera's vertical axis is
 flipped to point up.
 
-People who live close together would overlap, so each cluster is packed
-on a square grid around its centre, each person in the free slot nearest
-their real location, followed by a few rounds of pushing apart clusters
-that still collide.
+People who live close together are scattered around their city like
+photos on a table: tiles that sit too close push each other apart along
+the real direction between them, while a weak spring keeps each near
+home, so neighbours overlap a little and keep their relative positions.
 
     pixi run -e demos team-map   # also writes shared/media/generated/team-map.png
 
@@ -40,20 +41,20 @@ from pathlib import Path
 import imageio.v3 as iio
 import numpy as np
 import pooch
-from scipy.optimize import linear_sum_assignment
 from skimage.transform import resize
 
 import napari
+from napari.utils.colormaps.standardize_color import transform_color
 
 DATA = Path(__file__).parents[1] / 'data'
 TEAM = DATA / 'team.toml'
 FIGURES = Path(__file__).parents[1] / 'media' / 'generated'
 
 DIM = 0.8  # darken the satellite image so avatars stand out
-AVATAR = 12.0  # avatar side, in degrees
+AVATAR = 10.0  # avatar side, in degrees
 AVATAR_PX = 128  # avatar resolution in the mosaics
-FRAME = 0.7  # frame stroke width; frames sit inside the tile
-GAP = 0.4  # space between neighbouring tiles
+FRAME_PX = 7  # frame stroke width in avatar pixels; frames sit inside the tile
+SPACING = 0.85  # closest two tiles may sit, as a fraction of AVATAR; below 1 overlaps
 
 ROLE_LABELS = {'sc': 'steering council', 'core': 'core team', 'triage': 'triage'}
 FRAME_COLORS = {
@@ -115,8 +116,12 @@ def countries() -> list[np.ndarray]:
     return rings
 
 
-def square_avatar(path: Path, size: int) -> np.ndarray:
-    """An RGBA avatar, centre-cropped to a square."""
+def avatar_tile(path: Path, roles: list[str], size: int) -> np.ndarray:
+    """An RGBA avatar, centre-cropped to a square, with one frame per role.
+
+    Frames are drawn into the pixels, most senior role outermost, so a tile
+    that overlaps another covers its frame too.
+    """
     img = iio.imread(path)
     if img.ndim == 2:
         img = np.stack([img] * 3, axis=-1)
@@ -124,6 +129,12 @@ def square_avatar(path: Path, size: int) -> np.ndarray:
     s = min(h, w)
     img = img[(h - s) // 2 : (h + s) // 2, (w - s) // 2 : (w + s) // 2, :3]
     img = resize(img, (size, size), anti_aliasing=True, preserve_range=True)
+    # distance of each pixel from the tile edge, in pixels
+    i = np.arange(size)
+    edge = np.minimum.outer(np.minimum(i, i[::-1]), np.minimum(i, i[::-1]))
+    for k, role in enumerate(roles):
+        band = (edge >= k * FRAME_PX) & (edge < (k + 1) * FRAME_PX)
+        img[band] = transform_color(FRAME_COLORS[role])[0, :3] * 255
     rgba = np.dstack([img, np.full((size, size), 255)]).astype(np.uint8)
     return rgba[::-1]  # rows run south to north on the map
 
@@ -131,50 +142,35 @@ def square_avatar(path: Path, size: int) -> np.ndarray:
 # --- layout ---------------------------------------------------------------
 
 
-def square_spiral(n: int) -> np.ndarray:
-    """n offsets on a unit square grid, nearest the centre first."""
-    k = int(np.ceil(np.sqrt(n)))
-    ij = np.stack(np.mgrid[-k : k + 1, -k : k + 1], axis=-1).reshape(-1, 2)
-    order = np.lexsort((np.arctan2(ij[:, 0], ij[:, 1]), np.hypot(ij[:, 0], ij[:, 1])))
-    return ij[order[:n]].astype(float)
+def layout(anchors: np.ndarray, spacing: float, iterations: int = 400) -> np.ndarray:
+    """Move tiles off each other while keeping them near home.
 
-
-def layout(anchors: np.ndarray, spacing: float, iterations: int = 100) -> np.ndarray:
-    """Spread square tiles so no two overlap.
-
-    People within ``spacing`` of a cluster's first member join that cluster.
-    Each cluster gets a compact block of grid slots around its mean
-    position, and each person takes the slot nearest their real location
-    (an optimal assignment), so north stays north inside a block. Tiles
-    that still overlap are pushed apart along the axis where they are
-    furthest apart, which keeps them in tidy rows and columns.
+    Everyone starts at their real location; people who share a city start
+    on a small sunflower spiral around it, so they have a direction to move
+    in. Each round, any two tiles closer than ``spacing`` (as squares: the
+    larger of the two axis distances) push each other apart along the line
+    between them, and a weak spring, fading to nothing by the last round,
+    pulls each tile back towards home. The
+    push follows the real direction between people, so someone south-east
+    of a neighbour stays south-east of them.
     """
-    clusters: list[list[int]] = []
-    for i, a in enumerate(anchors):
-        for c in clusters:
-            if np.abs(anchors[c[0]] - a).max() < spacing:
-                c.append(i)
-                break
-        else:
-            clusters.append([i])
-
     pos = anchors.astype(float).copy()
-    for c in clusters:
-        slots = anchors[c].mean(axis=0) + square_spiral(len(c)) * spacing
-        cost = ((anchors[c][:, None] - slots[None]) ** 2).sum(axis=-1)
-        people, chosen = linear_sum_assignment(cost)
-        pos[np.asarray(c)[people]] = slots[chosen]
+    golden = np.pi * (3 - np.sqrt(5))
+    _, city, counts = np.unique(anchors, axis=0, return_inverse=True, return_counts=True)
+    for c in np.flatnonzero(counts > 1):
+        k = np.arange(counts[c])
+        offsets = np.sqrt(k + 0.5)[:, None] * np.c_[np.sin(k * golden), np.cos(k * golden)]
+        pos[city.ravel() == c] += 0.3 * spacing * offsets
 
-    for _ in range(iterations):
+    # the spring fades out, so the last rounds only separate tiles
+    for pull in np.linspace(0.02, 0, iterations):
         delta = pos[:, None] - pos[None]
-        gap = np.abs(delta).max(axis=-1)
-        np.fill_diagonal(gap, np.inf)
-        overlap = np.clip(spacing - gap, 0, None)
-        if not overlap.any():
-            break
-        axis = np.abs(delta).argmax(axis=-1)
-        direction = np.sign(delta) * (np.arange(2) == axis[..., None])
-        pos += (direction * overlap[..., None] / 2).sum(axis=1)
+        dist = np.hypot(delta[..., 0], delta[..., 1])
+        np.fill_diagonal(dist, np.inf)
+        overlap = np.clip(spacing - np.abs(delta).max(axis=-1), 0, None)
+        np.fill_diagonal(overlap, 0)
+        push = (delta / dist[..., None] * overlap[..., None] / 2).sum(axis=1)
+        pos += push + pull * (anchors - pos)
     return pos
 
 
@@ -182,7 +178,10 @@ def layout(anchors: np.ndarray, spacing: float, iterations: int = 100) -> np.nda
 
 
 def mosaic(people: list[dict]) -> tuple[np.ndarray, dict]:
-    """Paste every avatar into one RGBA image; return it with its transform."""
+    """Paste every avatar into one RGBA image; return it with its transform.
+
+    ``people`` is in drawing order: later tiles cover earlier ones.
+    """
     px = AVATAR / AVATAR_PX
     xy = np.array([p['xy'] for p in people])
     origin = xy.min(axis=0) - AVATAR / 2
@@ -190,40 +189,33 @@ def mosaic(people: list[dict]) -> tuple[np.ndarray, dict]:
     canvas = np.zeros((*extent, 4), dtype=np.uint8)
     for p in people:
         r, c = np.round((p['xy'] - AVATAR / 2 - origin) / px).astype(int)
-        canvas[r : r + AVATAR_PX, c : c + AVATAR_PX] = square_avatar(p['photo_path'], AVATAR_PX)
+        tile = avatar_tile(p['photo_path'], p['frames'], AVATAR_PX)
+        canvas[r : r + AVATAR_PX, c : c + AVATAR_PX] = tile
     return canvas, {'scale': (px, px), 'translate': tuple(origin)}
 
 
-def frames(people: list[dict]) -> tuple[list[np.ndarray], dict, list[str]]:
-    """Concentric square frames (two corners), largest first, with features."""
-    shapes, colors = [], []
+def hover_squares(people: list[dict]) -> tuple[list[np.ndarray], dict]:
+    """One square (two corners) per person, with the features to show."""
     features = defaultdict(list)
     for p in people:
-        for k, role in enumerate(p['frames']):
-            # frames are inset from the tile edge, most senior role outermost
-            half = AVATAR / 2 - FRAME * (k + 0.5)
-            shapes.append(np.array([p['xy'] - half, p['xy'] + half]))
-            colors.append(FRAME_COLORS[role])
-            features['name'].append(p['name'])
-            features['handle'].append('@' + p['handle'])
-            roles = [ROLE_LABELS[r] for r in p['roles']]
-            roles += [f'emeritus {ROLE_LABELS[r]}' for r in p['emeritus']]
-            features['roles'].append(', '.join(roles))
-            features['place'].append(p['place'])
-    # draw big frames first so smaller ones sit on top and win the hover
-    order = np.argsort([s[0, 0] - s[1, 0] for s in shapes], kind='stable')
-    return (
-        [shapes[i] for i in order],
-        {k: [v[i] for i in order] for k, v in features.items()},
-        [colors[i] for i in order],
-    )
+        features['name'].append(p['name'])
+        features['handle'].append('@' + p['handle'])
+        roles = [ROLE_LABELS[r] for r in p['roles']]
+        roles += [f'emeritus {ROLE_LABELS[r]}' for r in p['emeritus']]
+        features['roles'].append(', '.join(roles))
+        features['place'].append(p['place'])
+    squares = [np.array([p['xy'] - AVATAR / 2, p['xy'] + AVATAR / 2]) for p in people]
+    return squares, dict(features)
 
 
 def main() -> napari.Viewer:
     people = load_team(TEAM)
     anchors = np.array([[p['lat'], p['lon']] for p in people])
-    for p, xy in zip(people, layout(anchors, AVATAR + GAP), strict=True):
+    for p, xy in zip(people, layout(anchors, AVATAR * SPACING), strict=True):
         p['xy'] = xy
+    # drawing order: by group as the layers stack, then north to south, so
+    # within a cluster each row slightly covers the row above it
+    people.sort(key=lambda p: (GROUPS.index(p['group']), -p['xy'][0]))
 
     viewer = napari.Viewer(title='napari team')
     earth = blue_marble()
@@ -253,22 +245,23 @@ def main() -> napari.Viewer:
             data,
             rgb=True,
             name=GROUP_NAMES[group],
-            opacity=0.45 if group == 'emeritus' else 1.0,
+            opacity=0.55 if group == 'emeritus' else 1.0,
             interpolation2d='linear',
             **transform,
         )
 
-    shapes, features, colors = frames(people)
+    # invisible squares, one per person, in drawing order so the tile on
+    # top wins the hover; the last layer added is selected, so hovering
+    # shows its features in the status bar
+    squares, features = hover_squares(people)
     viewer.add_shapes(
-        shapes,
+        squares,
         shape_type='rectangle',
-        name='roles',
+        name='people',
         features=features,
         face_color='transparent',
-        edge_color=colors,
-        edge_width=FRAME,
+        edge_width=0,
     )
-    # the last layer added is selected, so hovering shows its features
 
     viewer.scene.camera.orientation2d = ('up', 'right')
     viewer.reset_view(margin=0)
