@@ -12,8 +12,15 @@ jupyter: python3
 #| include: false
 from pathlib import Path
 
+import pandas as pd
 import segno
 from nps import data, plots
+
+# "as of" = the newest data point nps has, so a stale checkout shows up on the slide
+AS_OF = max(
+    pd.to_datetime(pd.read_csv(data.DATA_DIR / "plugin_versions.csv")["upload_time"], utc=True).max(),
+    pd.to_datetime(pd.read_json(data.DATA_DIR / "commits_napari_napari.json")["date"], utc=True).max(),
+).strftime("%Y-%m-%d")
 
 FIG = Path("figures")
 MEDIA = Path("../../shared/media/generated")
@@ -104,7 +111,7 @@ contracted work with Quansight; most contributions are volunteer.
 show(plots.contributors_by_year(data.contributors_by_year()), "contributors")
 ```
 
-[contributors to public napari GitHub repos · data: timmonko/nps]{.caption}
+[contributors to public napari GitHub repos · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
 
 # how work happens {.statement}
 
@@ -151,7 +158,7 @@ zones.
 show(plots.new_plugins_by_year(data.new_plugins_by_year()), "new-plugins")
 ```
 
-[napari plugins on PyPI · data: timmonko/nps]{.caption}
+[napari plugins on PyPI · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
 
 ## Half of the living plugins shipped a release in the last six months
 
@@ -160,7 +167,7 @@ show(plots.new_plugins_by_year(data.new_plugins_by_year()), "new-plugins")
 show(plots.plugin_status(data.plugin_status()), "plugin-status")
 ```
 
-[living = a release in the past 2 years; that share was 35% in mid-2024 · data: timmonko/nps]{.caption}
+[living = a release in the past 2 years; that share was 35% in mid-2024 · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
 
 ::: {.notes}
 Every plugin ever released, stacked by when it last shipped. The top is the
@@ -170,23 +177,6 @@ anything in two years, the share releasing recently went from about a third
 in 2024 to about half now. The grey band is the long tail of one-off thesis
 plugins. That's fine, but it means the ecosystem needs maintainers, not just
 authors.
-:::
-
-## People installing napari themselves: nearly 4× since 2022
-
-```{python}
-#| output: asis
-desktop = data.pypi_downloads_by_system()
-show(plots.pypi_downloads_desktop(desktop[desktop["month"] >= "2021-01-01"]), "downloads-desktop")
-```
-
-[PyPI downloads on Windows and macOS; Linux left out because CI runs there · data: ClickHouse public PyPI dataset]{.caption}
-
-::: {.notes}
-Total downloads are about 1.5 million a year, but most of that is Linux:
-CI machines and cloud builds, with one-month spikes of a million or more.
-Windows and macOS are mostly people on their own laptops, and those went from
-about 110 thousand in 2022 to over 400 thousand so far this year.
 :::
 
 # work with us {.statement}
