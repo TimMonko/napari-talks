@@ -6,10 +6,11 @@ Show where the napari team is, with nothing but 2D layers: a satellite
 image of the Earth as an Image, country borders as a Shapes layer of paths,
 one RGBA Image *mosaic* of square avatars per team group, each with a
 coloured frame per role drawn into its pixels, and an invisible Points
-layer of one square per person whose features show in the status bar and
-tooltip when you hover over a person. Every layer declares its units
-(degrees) and axis labels (latitude, longitude), which label the
-coordinate grid overlay and the status bar.
+layer of one square per person whose features show in the status bar when
+you hover over a person. Every layer declares its units (degrees) and axis
+labels (latitude, longitude), which label the status bar and the
+coordinate grid. The grid and the tooltip are set up but off; turn them on
+from the View menu or by setting ``visible = True``.
 
 All layers share one world coordinate system, (latitude, longitude) in
 degrees, set through ``scale`` and ``translate`` as in the xarray lat/lon
@@ -260,7 +261,7 @@ def main() -> napari.Viewer:
     # one invisible square point per person, the size of a tile and in
     # drawing order, so the tile on top wins the hover. Points show their
     # features in the status bar (this layer is selected, being added last)
-    # and in the hover tooltip.
+    # and, when the tooltip is on, next to the cursor.
     viewer.add_points(
         np.array([p['xy'] for p in people]),
         name='people',
@@ -271,18 +272,20 @@ def main() -> napari.Viewer:
         border_width=0,
         **GEO,
     )
-    viewer.tooltip.visible = True
+    # Overlays are set up but off; set `visible = True` to show them (also
+    # from the View menu). The tooltip shows the hovered person's features.
+    viewer.tooltip.visible = False
 
-    # a latitude/longitude graticule with tick labels. Its axis labels
+    # A latitude/longitude graticule with tick labels. Its axis labels
     # ("latitude (deg)", from the layers' axis_labels and units) are off:
     # in napari 0.10.0 the vertical one overlaps the tick labels, and on a
-    # world map the ticks speak for themselves. The status bar still shows
-    # both, with the cursor position.
+    # world map the ticks speak for themselves. export_figure crops to the
+    # data, which cuts off the tick labels, so keep it off for exports.
     grid = viewer.scene.overlays['coordinate_grid']
     grid.n_ticks = 7
     grid.axis_labels = False
     grid.opacity = 0.5
-    grid.visible = True
+    grid.visible = False
 
     viewer.scene.camera.orientation2d = ('up', 'right')
     viewer.reset_view()  # the default margin leaves room for the grid labels
@@ -291,11 +294,6 @@ def main() -> napari.Viewer:
 
 if __name__ == '__main__':
     viewer = main()
-    # the figure crops to the data, which would cut off the grid labels, so
-    # export it without the grid
-    grid = viewer.scene.overlays['coordinate_grid']
-    grid.visible = False
     FIGURES.mkdir(parents=True, exist_ok=True)
     viewer.export_figure(str(FIGURES / 'team-map.png'))
-    grid.visible = True
     napari.run()
