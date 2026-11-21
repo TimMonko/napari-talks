@@ -8,19 +8,23 @@ one RGBA Image *mosaic* of square avatars per team group, and a Shapes
 layer of square frames (one frame per role) whose features show in the
 status bar when you hover over a person with that layer selected.
 
-Everything is drawn in the Equal Earth projection (Šavrič, Patterson and
-Jenny, 2018), an equal-area world projection with closed-form equations.
-Locations and country borders go through the forward projection; the
-satellite image, which comes as a plain latitude/longitude grid, is
-resampled through the inverse. Map units are degrees at the equator.
-North is up, so the camera's vertical axis is flipped.
+All layers share one world coordinate system, (latitude, longitude) in
+degrees, set through ``scale`` and ``translate`` as in the xarray lat/lon
+example: the satellite image is an equirectangular grid, so it needs no
+reprojection. Latitude increases upwards, so the camera's vertical axis is
+flipped to point up.
 
 People who live close together would overlap, so each cluster is packed
-on a square grid around its centre, followed by a few rounds of pushing
-apart clusters that still collide.
+on a square grid around its centre, each person in the free slot nearest
+their real location, followed by a few rounds of pushing apart clusters
+that still collide.
 
-    pixi run -e demos team-map                      # shared/data/team.toml
-    pixi run -e demos team-map path/to/team.toml    # another roster
+    pixi run -e demos team-map   # also writes shared/media/generated/team-map.png
+
+Before showing the viewer, ``export_figure`` saves the map for slides. It
+crops to the extent of the layers (the whole globe, so the theme doesn't
+show) and renders at the finest layer's resolution (the Blue Marble image,
+15 px per degree), so 5400 x 2700.
 
 Map: NASA Blue Marble Next Generation (July 2004), public domain. Borders:
 Natural Earth 1:110m admin-0 countries, public domain.
@@ -29,7 +33,6 @@ Natural Earth 1:110m admin-0 countries, public domain.
 """
 
 import json
-import sys
 import tomllib
 from collections import defaultdict
 from pathlib import Path
@@ -37,21 +40,20 @@ from pathlib import Path
 import imageio.v3 as iio
 import numpy as np
 import pooch
+from scipy.optimize import linear_sum_assignment
 from skimage.transform import resize
 
 import napari
 
 DATA = Path(__file__).parents[1] / 'data'
-TEAM = Path(sys.argv[1]) if len(sys.argv) > 1 else DATA / 'team.toml'
+TEAM = DATA / 'team.toml'
+FIGURES = Path(__file__).parents[1] / 'media' / 'generated'
 
-PAD = 12  # map margin around the people, in map units
-UNITS_PER_PX = 0.06  # resolution of the projected map
 DIM = 0.8  # darken the satellite image so avatars stand out
-
-AVATAR = 7.0  # avatar side, in map units
+AVATAR = 12.0  # avatar side, in degrees
 AVATAR_PX = 128  # avatar resolution in the mosaics
-FRAME = 0.4  # frame stroke width; frames sit inside the tile
-GAP = 0.2  # space between neighbouring tiles
+FRAME = 0.7  # frame stroke width; frames sit inside the tile
+GAP = 0.4  # space between neighbouring tiles
 
 ROLE_LABELS = {'sc': 'steering council', 'core': 'core team', 'triage': 'triage'}
 FRAME_COLORS = {
@@ -77,6 +79,7 @@ GROUP_NAMES = {
 
 def load_team(path: Path) -> list[dict]:
     people = tomllib.loads(path.read_text(encoding='utf-8'))['person']
+    people = [p for p in people if 'lat' in p]
     for p in people:
         p['group'] = next((r for r in FRAME_ORDER if r in p['roles']), 'emeritus')
         p['frames'] = [r for r in FRAME_ORDER if r in p['roles']] or ['emeritus']
@@ -86,7 +89,7 @@ def load_team(path: Path) -> list[dict]:
 
 
 def blue_marble() -> np.ndarray:
-    """NASA Blue Marble, equirectangular: rows run north to south."""
+    """NASA Blue Marble: an equirectangular image, rows north to south."""
     path = pooch.retrieve(
         'https://assets.science.nasa.gov/content/dam/science/esd/eo/images/'
         'bmng/bmng-base/july/world.200407.3x5400x2700.jpg',
@@ -112,74 +115,6 @@ def countries() -> list[np.ndarray]:
     return rings
 
 
-# --- Equal Earth projection -------------------------------------------------
-
-A1, A2, A3, A4 = 1.340264, -0.081106, 0.000893, 0.003796
-M = np.sqrt(3) / 2
-
-
-def _y(t):
-    return t * (A1 + A2 * t**2 + A3 * t**6 + A4 * t**8)
-
-
-def _dy(t):
-    return A1 + 3 * A2 * t**2 + 7 * A3 * t**6 + 9 * A4 * t**8
-
-
-def project(latlon: np.ndarray) -> np.ndarray:
-    """(lat, lon) in degrees -> (y, x) in map units."""
-    lat, lon = np.deg2rad(latlon).T
-    t = np.arcsin(M * np.sin(lat))
-    x = lon * np.cos(t) / (M * _dy(t))
-    return np.rad2deg(np.stack([_y(t), x], axis=-1))
-
-
-def unproject(yx: np.ndarray) -> np.ndarray:
-    """(y, x) in map units -> (lat, lon) in degrees; NaN off the globe."""
-    y, x = np.deg2rad(yx).T
-    t = y.copy()
-    for _ in range(10):  # Newton's method on y = _y(t)
-        t -= (_y(t) - y) / _dy(t)
-    with np.errstate(invalid='ignore'):
-        lat = np.arcsin(np.sin(t) / M)
-        lon = x * M * _dy(t) / np.cos(t)
-    lon[np.abs(lon) > np.pi] = np.nan
-    return np.rad2deg(np.stack([lat, lon], axis=-1))
-
-
-def projected_map(image: np.ndarray, box: np.ndarray) -> np.ndarray:
-    """Resample the equirectangular image into ``box`` ((y0, x0), (y1, x1)).
-
-    Output rows run south to north; pixels off the globe are transparent.
-    """
-    ys = np.arange(box[0, 0], box[1, 0], UNITS_PER_PX) + UNITS_PER_PX / 2
-    xs = np.arange(box[0, 1], box[1, 1], UNITS_PER_PX) + UNITS_PER_PX / 2
-    grid = np.stack(np.meshgrid(ys, xs, indexing='ij'), axis=-1).reshape(-1, 2)
-    lat, lon = unproject(grid).T
-    off = np.isnan(lon)
-    h, w = image.shape[:2]
-    rows = ((90 - lat) / 180 * h).astype(int).clip(0, h - 1)
-    cols = ((np.nan_to_num(lon) + 180) / 360 * w).astype(int).clip(0, w - 1)
-    rgb = image[rows, cols, :3] * DIM
-    alpha = np.where(off, 0, 255)
-    return np.column_stack([rgb, alpha]).astype(np.uint8).reshape(len(ys), len(xs), 4)
-
-
-def clip_paths(rings: list[np.ndarray], box: np.ndarray) -> list[np.ndarray]:
-    """Split each ring into the runs of vertices that fall inside ``box``."""
-    paths = []
-    for ring in rings:
-        inside = np.all((ring >= box[0]) & (ring <= box[1]), axis=1)
-        breaks = np.flatnonzero(np.diff(inside.astype(int))) + 1
-        for run in np.split(np.arange(len(ring)), breaks):
-            if inside[run[0]] and len(run) > 1:
-                paths.append(ring[run])
-    return paths
-
-
-# --- avatars and layout ---------------------------------------------------
-
-
 def square_avatar(path: Path, size: int) -> np.ndarray:
     """An RGBA avatar, centre-cropped to a square."""
     img = iio.imread(path)
@@ -193,6 +128,9 @@ def square_avatar(path: Path, size: int) -> np.ndarray:
     return rgba[::-1]  # rows run south to north on the map
 
 
+# --- layout ---------------------------------------------------------------
+
+
 def square_spiral(n: int) -> np.ndarray:
     """n offsets on a unit square grid, nearest the centre first."""
     k = int(np.ceil(np.sqrt(n)))
@@ -204,8 +142,10 @@ def square_spiral(n: int) -> np.ndarray:
 def layout(anchors: np.ndarray, spacing: float, iterations: int = 100) -> np.ndarray:
     """Spread square tiles so no two overlap.
 
-    People within ``spacing`` of a cluster's first member join that cluster;
-    each cluster is packed on a square grid around its mean position. Tiles
+    People within ``spacing`` of a cluster's first member join that cluster.
+    Each cluster gets a compact block of grid slots around its mean
+    position, and each person takes the slot nearest their real location
+    (an optimal assignment), so north stays north inside a block. Tiles
     that still overlap are pushed apart along the axis where they are
     furthest apart, which keeps them in tidy rows and columns.
     """
@@ -220,7 +160,10 @@ def layout(anchors: np.ndarray, spacing: float, iterations: int = 100) -> np.nda
 
     pos = anchors.astype(float).copy()
     for c in clusters:
-        pos[c] = anchors[c].mean(axis=0) + square_spiral(len(c)) * spacing
+        slots = anchors[c].mean(axis=0) + square_spiral(len(c)) * spacing
+        cost = ((anchors[c][:, None] - slots[None]) ** 2).sum(axis=-1)
+        people, chosen = linear_sum_assignment(cost)
+        pos[np.asarray(c)[people]] = slots[chosen]
 
     for _ in range(iterations):
         delta = pos[:, None] - pos[None]
@@ -266,7 +209,7 @@ def frames(people: list[dict]) -> tuple[list[np.ndarray], dict, list[str]]:
             roles = [ROLE_LABELS[r] for r in p['roles']]
             roles += [f'emeritus {ROLE_LABELS[r]}' for r in p['emeritus']]
             features['roles'].append(', '.join(roles))
-            features['place'].append(p.get('place') or 'not shared')
+            features['place'].append(p['place'])
     # draw big frames first so smaller ones sit on top and win the hover
     order = np.argsort([s[0, 0] - s[1, 0] for s in shapes], kind='stable')
     return (
@@ -277,27 +220,24 @@ def frames(people: list[dict]) -> tuple[list[np.ndarray], dict, list[str]]:
 
 
 def main() -> napari.Viewer:
-    people = [p for p in load_team(TEAM) if 'lat' in p]
-    anchors = project(np.array([[p['lat'], p['lon']] for p in people]))
-    spacing = AVATAR + GAP
-    for p, xy in zip(people, layout(anchors, spacing), strict=True):
+    people = load_team(TEAM)
+    anchors = np.array([[p['lat'], p['lon']] for p in people])
+    for p, xy in zip(people, layout(anchors, AVATAR + GAP), strict=True):
         p['xy'] = xy
 
-    # crop the map to the people, plus a margin
-    xy = np.array([p['xy'] for p in people])
-    box = np.array([xy.min(axis=0) - spacing / 2 - PAD, xy.max(axis=0) + spacing / 2 + PAD])
-
     viewer = napari.Viewer(title='napari team')
+    earth = blue_marble()
+    deg_per_px = 180 / earth.shape[0]
     viewer.add_image(
-        projected_map(blue_marble(), box),
+        (earth[::-1] * DIM).astype(np.uint8),  # rows south to north
         rgb=True,
         name='Blue Marble',
-        scale=(UNITS_PER_PX, UNITS_PER_PX),
-        translate=tuple(box[0]),
+        scale=(deg_per_px, deg_per_px),
+        translate=(-90 + deg_per_px / 2, -180 + deg_per_px / 2),
         interpolation2d='linear',
     )
     viewer.add_shapes(
-        clip_paths([project(r) for r in countries()], box),
+        countries(),
         shape_type='path',
         name='countries',
         edge_color='white',
@@ -337,4 +277,6 @@ def main() -> napari.Viewer:
 
 if __name__ == '__main__':
     viewer = main()
+    FIGURES.mkdir(parents=True, exist_ok=True)
+    viewer.export_figure(str(FIGURES / 'team-map.png'))
     napari.run()

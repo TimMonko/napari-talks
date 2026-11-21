@@ -5,8 +5,8 @@
     pixi run -e demos team-avatars   # cache github.com/<handle>.png avatars
 
 Re-running ``roster`` refreshes names and roles from napari/docs and keeps the
-hand-filled fields (place, lat, lon, photo). Every place is a city; locations
-are rounded to half a degree before they are stored.
+hand-filled fields (place, lat, lon, photo). Every place is a city, and its
+coordinates are the city's, so people in one city share a point.
 """
 
 import re
@@ -29,8 +29,6 @@ SECTIONS = {
     "Current Triage Team Members": ("triage", False),
 }
 ROLE_ORDER = ["sc", "core", "triage"]
-# every place is a city, rounded to this many degrees
-ROUND_DEG = 0.5
 KEPT = ("place", "lat", "lon", "photo")
 
 ENTRY = re.compile(r"^- \[(?P<name>[^\]]+)\]\(https://github\.com/[^)]*\)\*? -\s+\[@(?P<handle>[\w-]+)\]", re.M)
@@ -76,8 +74,8 @@ def save(people: list[dict]) -> None:
         "# (refresh: `pixi run -e demos team-roster`; hand-filled fields are kept).",
         "# Fill `place` with a city (\"Kyoto, Japan\"), then",
         "# `pixi run -e demos team-geocode`.",
-        "# lat/lon are rounded; `photo` is a path under shared/data/ for anyone",
-        "# without a GitHub avatar. Leave `place` empty to appear off the map.",
+        "# `photo` is a path under shared/data/ to use instead of the GitHub",
+        "# avatar. People with an empty `place` are left off the map.",
         "",
     ]
     for p in people:
@@ -128,10 +126,7 @@ def geocode() -> None:
             if loc is None:
                 print(f"  not found: {p['place']!r} ({p['handle']})")
                 continue
-            found[p["place"]] = (
-                round(round(loc.latitude / ROUND_DEG) * ROUND_DEG, 1),
-                round(round(loc.longitude / ROUND_DEG) * ROUND_DEG, 1),
-            )
+            found[p["place"]] = (round(loc.latitude, 3), round(loc.longitude, 3))
         p["lat"], p["lon"] = found[p["place"]]
         print(f"  {p['place']}: {p['lat']}, {p['lon']}")
         save(people)

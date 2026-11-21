@@ -43,10 +43,9 @@ preview = { cmd = "quarto preview", description = "Preview the site; pass a talk
 runner = { cmd = "python shared/runner/runner.py", description = "Local server so demo slides can launch napari" }
 screenshots = "python shared/demos/screenshots.py"
 team-roster = { cmd = "python shared/demos/team_data.py roster", description = "Parse napari/docs team.md into shared/data/team.toml" }
-team-geocode = { cmd = "python shared/demos/team_data.py geocode", description = "Fill rounded lat/lon for each place in team.toml" }
+team-geocode = { cmd = "python shared/demos/team_data.py geocode", description = "Fill lat/lon for each place in team.toml" }
 team-avatars = { cmd = "python shared/demos/team_data.py avatars", description = "Cache GitHub avatars into shared/data/avatars" }
 team-map = { cmd = "python shared/demos/team_map.py", description = "Open the napari team map" }
-team-map-screenshots = { cmd = "python shared/demos/team_map_screenshots.py", description = "Write team-map-{dark,light}.png for slides" }
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
