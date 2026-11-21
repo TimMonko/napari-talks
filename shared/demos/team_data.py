@@ -5,8 +5,8 @@
     pixi run -e demos team-avatars   # cache github.com/<handle>.png avatars
 
 Re-running ``roster`` refreshes names and roles from napari/docs and keeps the
-hand-filled fields (place, precision, lat, lon, photo). Locations are rounded
-before they are stored; nobody's position is more precise than a city.
+hand-filled fields (place, lat, lon, photo). Every place is a city; locations
+are rounded to half a degree before they are stored.
 """
 
 import re
@@ -29,9 +29,9 @@ SECTIONS = {
     "Current Triage Team Members": ("triage", False),
 }
 ROLE_ORDER = ["sc", "core", "triage"]
-# rounding step in degrees per precision
-ROUNDING = {"city": 0.5, "region": 1.0, "country": 1.0}
-KEPT = ("place", "precision", "lat", "lon", "photo")
+# every place is a city, rounded to this many degrees
+ROUND_DEG = 0.5
+KEPT = ("place", "lat", "lon", "photo")
 
 ENTRY = re.compile(r"^- \[(?P<name>[^\]]+)\]\(https://github\.com/[^)]*\)\*? -\s+\[@(?P<handle>[\w-]+)\]", re.M)
 
@@ -74,15 +74,15 @@ def save(people: list[dict]) -> None:
         "# napari team roster for the team map (shared/demos/team_map.py).",
         "# Names, handles and roles come from napari/docs docs/community/team.md",
         "# (refresh: `pixi run -e demos team-roster`; hand-filled fields are kept).",
-        '# Fill `place` ("Kyoto", "Bavaria, Germany", "Japan") and `precision`',
-        "# (city | region | country), then `pixi run -e demos team-geocode`.",
+        "# Fill `place` with a city (\"Kyoto, Japan\"), then",
+        "# `pixi run -e demos team-geocode`.",
         "# lat/lon are rounded; `photo` is a path under shared/data/ for anyone",
         "# without a GitHub avatar. Leave `place` empty to appear off the map.",
         "",
     ]
     for p in people:
         lines.append("[[person]]")
-        for key in ("handle", "name", "roles", "emeritus", "place", "precision", "lat", "lon", "photo"):
+        for key in ("handle", "name", "roles", "emeritus", "place", "lat", "lon", "photo"):
             if key in p and p[key] is not None:
                 lines.append(f"{key} = {_value(p[key])}")
         lines.append("")
@@ -98,7 +98,6 @@ def roster() -> None:
         prev = old.get(handle, {})
         p.update({k: prev[k] for k in KEPT if k in prev})
         p.setdefault("place", "")
-        p.setdefault("precision", "")
         p.setdefault("photo", "")
         people.append(p)
     rank = lambda p: (ROLE_ORDER.index((p["roles"] or p["emeritus"])[0]), bool(not p["roles"]), p["name"].lower())
@@ -122,9 +121,8 @@ def geocode() -> None:
         if loc is None:
             print(f"  not found: {p['place']!r} ({p['handle']})")
             continue
-        step = ROUNDING.get(p.get("precision") or "city", 0.5)
-        p["lat"] = round(round(loc.latitude / step) * step, 1)
-        p["lon"] = round(round(loc.longitude / step) * step, 1)
+        p["lat"] = round(round(loc.latitude / ROUND_DEG) * ROUND_DEG, 1)
+        p["lon"] = round(round(loc.longitude / ROUND_DEG) * ROUND_DEG, 1)
         print(f"  {p['place']}: {p['lat']}, {p['lon']}")
     save(people)
 
