@@ -5,9 +5,11 @@ The napari team on a world map
 Show where the napari team is, with nothing but 2D layers: a satellite
 image of the Earth as an Image, country borders as a Shapes layer of paths,
 one RGBA Image *mosaic* of square avatars per team group, each with a
-coloured frame per role drawn into its pixels, and an invisible Shapes
-layer of one square per person whose features show in the status bar when
-you hover over a person with that layer selected.
+coloured frame per role drawn into its pixels, and an invisible Points
+layer of one square per person whose features show in the status bar and
+tooltip when you hover over a person. Every layer declares its units
+(degrees) and axis labels (latitude, longitude), which label the
+coordinate grid overlay and the status bar.
 
 All layers share one world coordinate system, (latitude, longitude) in
 degrees, set through ``scale`` and ``translate`` as in the xarray lat/lon
@@ -51,10 +53,13 @@ TEAM = DATA / 'team.toml'
 FIGURES = Path(__file__).parents[1] / 'media' / 'generated'
 
 DIM = 0.8  # darken the satellite image so avatars stand out
-AVATAR = 10.0  # avatar side, in degrees
+AVATAR = 11.0  # avatar side, in degrees
 AVATAR_PX = 128  # avatar resolution in the mosaics
 FRAME_PX = 7  # frame stroke width in avatar pixels; frames sit inside the tile
 SPACING = 0.85  # closest two tiles may sit, as a fraction of AVATAR; below 1 overlaps
+
+# every layer lives in the same geographic world coordinates
+GEO = {'units': ('degree', 'degree'), 'axis_labels': ('latitude', 'longitude')}
 
 ROLE_LABELS = {'sc': 'steering council', 'core': 'core team', 'triage': 'triage'}
 FRAME_COLORS = {
@@ -194,8 +199,8 @@ def mosaic(people: list[dict]) -> tuple[np.ndarray, dict]:
     return canvas, {'scale': (px, px), 'translate': tuple(origin)}
 
 
-def hover_squares(people: list[dict]) -> tuple[list[np.ndarray], dict]:
-    """One square (two corners) per person, with the features to show."""
+def person_features(people: list[dict]) -> dict:
+    """What to show when hovering over a person."""
     features = defaultdict(list)
     for p in people:
         features['name'].append(p['name'])
@@ -204,8 +209,7 @@ def hover_squares(people: list[dict]) -> tuple[list[np.ndarray], dict]:
         roles += [f'emeritus {ROLE_LABELS[r]}' for r in p['emeritus']]
         features['roles'].append(', '.join(roles))
         features['place'].append(p['place'])
-    squares = [np.array([p['xy'] - AVATAR / 2, p['xy'] + AVATAR / 2]) for p in people]
-    return squares, dict(features)
+    return dict(features)
 
 
 def main() -> napari.Viewer:
@@ -227,6 +231,7 @@ def main() -> napari.Viewer:
         scale=(deg_per_px, deg_per_px),
         translate=(-90 + deg_per_px / 2, -180 + deg_per_px / 2),
         interpolation2d='linear',
+        **GEO,
     )
     viewer.add_shapes(
         countries(),
@@ -235,6 +240,7 @@ def main() -> napari.Viewer:
         edge_color='white',
         edge_width=0.1,
         opacity=0.3,
+        **GEO,
     )
     for group in GROUPS:
         members = [p for p in people if p['group'] == group]
@@ -248,28 +254,48 @@ def main() -> napari.Viewer:
             opacity=0.55 if group == 'emeritus' else 1.0,
             interpolation2d='linear',
             **transform,
+            **GEO,
         )
 
-    # invisible squares, one per person, in drawing order so the tile on
-    # top wins the hover; the last layer added is selected, so hovering
-    # shows its features in the status bar
-    squares, features = hover_squares(people)
-    viewer.add_shapes(
-        squares,
-        shape_type='rectangle',
+    # one invisible square point per person, the size of a tile and in
+    # drawing order, so the tile on top wins the hover. Points show their
+    # features in the status bar (this layer is selected, being added last)
+    # and in the hover tooltip.
+    viewer.add_points(
+        np.array([p['xy'] for p in people]),
         name='people',
-        features=features,
+        symbol='square',
+        size=AVATAR,
+        features=person_features(people),
         face_color='transparent',
-        edge_width=0,
+        border_width=0,
+        **GEO,
     )
+    viewer.tooltip.visible = True
+
+    # a latitude/longitude graticule with tick labels. Its axis labels
+    # ("latitude (deg)", from the layers' axis_labels and units) are off:
+    # in napari 0.10.0 the vertical one overlaps the tick labels, and on a
+    # world map the ticks speak for themselves. The status bar still shows
+    # both, with the cursor position.
+    grid = viewer.scene.overlays['coordinate_grid']
+    grid.n_ticks = 7
+    grid.axis_labels = False
+    grid.opacity = 0.5
+    grid.visible = True
 
     viewer.scene.camera.orientation2d = ('up', 'right')
-    viewer.reset_view(margin=0)
+    viewer.reset_view()  # the default margin leaves room for the grid labels
     return viewer
 
 
 if __name__ == '__main__':
     viewer = main()
+    # the figure crops to the data, which would cut off the grid labels, so
+    # export it without the grid
+    grid = viewer.scene.overlays['coordinate_grid']
+    grid.visible = False
     FIGURES.mkdir(parents=True, exist_ok=True)
     viewer.export_figure(str(FIGURES / 'team-map.png'))
+    grid.visible = True
     napari.run()
