@@ -1,5 +1,5 @@
 ---
-pagetitle: "CBIAS 2026 · the napari community"
+pagetitle: "There's no u in napari, but there should be!"
 format:
   napari-revealjs:
     footer: "CBIAS 2026 · the napari community"
@@ -46,9 +46,9 @@ def qr(url, name):
 ![](../../_extensions/napari/logos/gradient-text-side-dark.svg){.only-dark width=200}
 ![](../../_extensions/napari/logos/gradient-text-side-light.svg){.only-light width=200}
 
-[You've learned napari. Now meet the people behind it.]{.np-h1}
+[There's no u in napari, but there should be!]{.np-h1}
 
-[Who we are, how the work happens, and how to join in]{.np-sub}
+[More than anything, napari is its community: you!]{.np-sub}
 
 [Tim Monko [napari community manager]{.muted}]{.np-who}
 :::
