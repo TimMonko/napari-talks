@@ -2,7 +2,7 @@
 pagetitle: "From napari to You and Back"
 format:
   napari-revealjs:
-    footer: "CBIAS 2026 · napari.zulipchat.com"
+    footer: "CBIAS 2026 · napari.org"
     logo: ../../_extensions/napari/logos/gradient-plain-dark.svg
     embed-resources: false
 jupyter: python3
@@ -92,7 +92,7 @@ community manager. You can be any of these, and stop at any of them.
 ```{=html}
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-top:40px;text-align:center">
   <div><img src="media/TimMonko.jpg" style="width:200px;border-radius:50%"><p class="lead">Tim Monko</p><p class="muted">operations · community manager · developer</p></div>
-  <div><img src="../../shared/data/photos/DragaDoncila.png" style="width:200px;border-radius:50%"><p class="lead">Draga Doncila Pop</p><p class="muted">operations</p></div>
+  <div><img src="media/DragaDoncila.jpg" style="width:200px;border-radius:50%"><p class="lead">Draga Doncila Pop</p><p class="muted">operations</p></div>
   <div><img src="media/Czaki.jpg" style="width:200px;border-radius:50%"><p class="lead">Grzegorz Bokota</p><p class="muted">developer</p></div>
   <div><img src="media/brisvag.jpg" style="width:200px;border-radius:50%"><p class="lead">Lorenzo Gaifas</p><p class="muted">developer</p></div>
 </div>
@@ -100,41 +100,38 @@ community manager. You can be any of these, and stop at any of them.
 
 [four contractors, about three full-time equivalents, on a CZI grant]{.caption}
 
-## But napari is mostly volunteers
+## A global core team
 
 ```{python}
 #| output: asis
 if (MEDIA / "team-map.jpg").exists():
-    print("![](../../shared/media/generated/team-map.jpg){.fill}\n")
+    # full slide width; the empty polar bands (above ~75°N, below ~60°S) are clipped off
+    print('<div style="width:100%;height:500px;overflow:hidden"><img src="../../shared/media/generated/team-map.jpg" style="display:block;width:100%;max-width:none;max-height:none;margin-top:-50px"></div>\n')
 else:
     print("[team map goes here: `pixi run -e demos team-map` writes shared/media/generated/team-map.jpg]{.muted}\n")
 ```
 
-[steering council · core team · triage · emeritus, drawn in napari]{.caption}
-
 ::: {.notes}
 Every face is a team member, placed near where they live. Most of them are
-not paid to work on napari.
+volunteers, not paid to work on napari.
 :::
 
 ## An independent project, funded by grants
 
 ```{=html}
-<div class="np-timeline" style="--n:4">
-  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2018</span><span class="what">started by researchers at CZ Biohub and Monash University</span></div>
+<div class="np-timeline" style="--n:3">
   <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2019 – 2023</span><span class="what">CZI staff build napari alongside the community</span></div>
-  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2021 – 2025</span><span class="what">CZI runs the napari hub</span></div>
-  <div class="ev fragment now"><span class="seg"></span><span class="dot"></span><span class="yr">2025 – 2028</span><span class="what">a CZI grant to the independent project</span></div>
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2022</span><span class="what">CZI seed sustainability grant: napari becomes independent</span></div>
+  <div class="ev fragment now"><span class="seg"></span><span class="dot"></span><span class="yr">2024</span><span class="what">CZI scaffolding sustainability grant</span></div>
 </div>
 ```
 
 [fiscal home: NumFOCUS · napari.org/stable/community/funding.html]{.caption}
 
 ::: {.notes}
-CZI's own team stepped back at the end of 2023. Since then napari is run by
-its community and funded by grants: seed sustainability (2022-2025, $200k),
-now scaffolding sustainability (2025-2028, $1.7M), which pays the four of us.
-Funders hold one seat on the steering council.
+The 2022 seed grant started napari's path to independence. The scaffolding
+sustainability grant ($1.7M) pays the four of us. Funders hold one seat on
+the steering council.
 :::
 
 ## So who decides?
@@ -183,29 +180,15 @@ show(plots.new_plugins_by_year(PLUGINS), "new-plugins")
 
 ## Start by showing up
 
-:::: {.columns}
-::: {.column width="62%"}
-![](media/zulip.png){width=100%}
-
-[napari.zulipchat.com]{.lead style="font-size:1.6em"}
-:::
-::: {.column width="38%"}
-::: {.links}
-[chat]{.lbl} napari.zulipchat.com
-
-[meet]{.lbl} community meetings; docs, plugin and graph layer working groups
-
-[ask]{.lbl} forum.image.sc, tag: napari
-:::
-
 ```{python}
 #| output: asis
-print(f'<img src="{qr(MEETINGS, "meetings")}" style="width:160px;margin-top:8px">\n')
+print(f'''<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px">
+  <div class="panel"><p class="lead">chat</p><p class="command">napari.zulipchat.com</p><p class="muted">questions, ideas, what you're working on</p></div>
+  <div class="panel"><p class="lead">meet</p><p>community meetings and working groups</p><img src="{qr(MEETINGS, "meetings")}" style="width:150px"></div>
+  <div class="panel"><p class="lead">ask</p><p class="command">forum.image.sc</p><p class="muted">usage questions, tag napari</p></div>
+</div>
+''')
 ```
-
-[meeting schedule]{.caption}
-:::
-::::
 
 ::: {.notes}
 Type napari.zulipchat.com with me now. You can read it without an account.
@@ -214,9 +197,11 @@ Meetings are open to everyone and run in several time zones.
 
 ## A first PR can be tiny
 
-![](media/pr7304-title.png){width=70%}
-
-![](media/pr7304-diff.png){width=68%}
+```{python}
+#| output: asis
+for mode in ("dark", "light"):
+    print(f'<div class="only-{mode}"><img src="media/pr7304-title-{mode}.png" style="width:70%;display:block"><img src="media/pr7304-diff-{mode}.png" style="width:68%;display:block;margin-top:24px"></div>\n')
+```
 
 [my first napari PR: removing 25 full stops, merged in two days]{.caption}
 
@@ -255,7 +240,7 @@ means.
 
 [we're looking to host workshops, and we're open to other funding]{.lead}
 
-[reach out to me: Tim Monko on napari.zulipchat.com]{.muted}
+[reach out: [info@napari.org]{.command} · [tim@napari.org]{.command}]{.muted}
 
 ## Thank you! Pick one: {.no-chrome}
 
