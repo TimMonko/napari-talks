@@ -1,8 +1,8 @@
 ---
-pagetitle: "There's no u in napari, but there should be!"
+pagetitle: "From napari to You and Back"
 format:
   napari-revealjs:
-    footer: "CBIAS 2026 · the napari community"
+    footer: "CBIAS 2026 · napari.zulipchat.com"
     logo: ../../_extensions/napari/logos/gradient-plain-dark.svg
     embed-resources: false
 jupyter: python3
@@ -25,6 +25,16 @@ AS_OF = max(
 FIG = Path("figures")
 MEDIA = Path("../../shared/media/generated")
 
+CONTRIB = data.contributors_by_year()
+THIS_YEAR = int(CONTRIB["year"].max())
+_now = CONTRIB[CONTRIB["year"] == THIS_YEAR].set_index("kind")["contributors"]
+N_CONTRIB, N_NEW = int(_now.sum()), int(_now["New"])
+
+PLUGINS = data.new_plugins_by_year()
+N_PLUGINS = int(PLUGINS["total_plugins"].max())
+
+MEETINGS = "https://napari.org/stable/community/meeting_schedule.html"
+
 
 def show(chart, name, cls="plot"):
     """Write <name>-dark/-light.svg and emit both; CSS shows the deck's theme."""
@@ -46,9 +56,9 @@ def qr(url, name):
 ![](../../_extensions/napari/logos/gradient-text-side-dark.svg){.only-dark width=200}
 ![](../../_extensions/napari/logos/gradient-text-side-light.svg){.only-light width=200}
 
-[There's no u in napari, but there should be!]{.np-h1}
+[From napari to You and Back]{.np-h1}
 
-[More than anything, napari is its community: you!]{.np-sub}
+[How to contribute]{.np-sub}
 
 [Tim Monko [napari community manager]{.muted}]{.np-who}
 :::
@@ -59,14 +69,38 @@ def qr(url, name):
 [a tribolium embryo, rendered in 3D in napari]{.caption}
 :::
 
+## How I got here
+
+```{=html}
+<div class="np-timeline" style="--n:6">
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2023</span><span class="what">solo plugin development</span></div>
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2024 · Oct</span><span class="what">first PR to napari</span></div>
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2025 · Mar</span><span class="what">invited to the core team</span></div>
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2025 · May</span><span class="what">community manager</span></div>
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2025 · Sep</span><span class="what">plugin sustainability initiative</span></div>
+  <div class="ev fragment now"><span class="seg"></span><span class="dot"></span><span class="yr">2026 · Feb</span><span class="what">full time on napari</span></div>
+</div>
+```
+
 ::: {.notes}
-You've just spent two days with napari. This talk is about the people: who
-builds it, how decisions get made, and where you fit in.
+Each step was a different role: plugin author, contributor, maintainer,
+community manager. You can be any of these, and stop at any of them.
 :::
 
-# who we are {.statement}
+## Today: one of four people paid to work on napari
 
-## A small team, spread around the world
+```{=html}
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-top:40px;text-align:center">
+  <div><img src="media/TimMonko.jpg" style="width:200px;border-radius:50%"><p class="lead">Tim Monko</p><p class="muted">operations · community manager · developer</p></div>
+  <div><img src="../../shared/data/photos/DragaDoncila.png" style="width:200px;border-radius:50%"><p class="lead">Draga Doncila Pop</p><p class="muted">operations</p></div>
+  <div><img src="media/Czaki.jpg" style="width:200px;border-radius:50%"><p class="lead">Grzegorz Bokota</p><p class="muted">developer</p></div>
+  <div><img src="media/brisvag.jpg" style="width:200px;border-radius:50%"><p class="lead">Lorenzo Gaifas</p><p class="muted">developer</p></div>
+</div>
+```
+
+[four contractors, about three full-time equivalents, on a CZI grant]{.caption}
+
+## But napari is mostly volunteers
 
 ```{python}
 #| output: asis
@@ -79,159 +113,161 @@ else:
 [steering council · core team · triage · emeritus, drawn in napari]{.caption}
 
 ::: {.notes}
-Every face is a team member, placed near where they live. Frames show roles.
-This map is itself a napari example: a NASA Blue Marble Image, country
-borders as Shapes, an avatar Image per group, all in latitude/longitude.
+Every face is a team member, placed near where they live. Most of them are
+not paid to work on napari.
 :::
 
-## Consensus first, a council as backstop
+## An independent project, funded by grants
 
 ```{=html}
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:24px">
-  <div class="panel fragment"><p class="lead">community</p><p>anyone who uses napari, asks a question, or files an issue</p></div>
-  <div class="panel fragment"><p class="lead">triage</p><p>labels and sorts issues, reviews PRs<br><span class="muted">1 member, and we want more</span></p></div>
-  <div class="panel fragment"><p class="lead">core team</p><p>sustained contributors who maintain napari with care<br><span class="muted">17 members</span></p></div>
-  <div class="panel fragment"><p class="lead">steering council</p><p>resolves deadlocks, strategy, funding, partnerships<br><span class="muted">4 members</span></p></div>
+<div class="np-timeline" style="--n:4">
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2018</span><span class="what">started by researchers at CZ Biohub and Monash University</span></div>
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2019 – 2023</span><span class="what">CZI staff build napari alongside the community</span></div>
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2021 – 2025</span><span class="what">CZI runs the napari hub</span></div>
+  <div class="ev fragment now"><span class="seg"></span><span class="dot"></span><span class="yr">2025 – 2028</span><span class="what">a CZI grant to the independent project</span></div>
+</div>
+```
+
+[fiscal home: NumFOCUS · napari.org/stable/community/funding.html]{.caption}
+
+::: {.notes}
+CZI's own team stepped back at the end of 2023. Since then napari is run by
+its community and funded by grants: seed sustainability (2022-2025, $200k),
+now scaffolding sustainability (2025-2028, $1.7M), which pays the four of us.
+Funders hold one seat on the steering council.
+:::
+
+## So who decides?
+
+```{=html}
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px">
+  <div class="panel fragment"><p class="lead">community</p><p>anyone who uses napari, asks a question, files an issue or opens a PR</p></div>
+  <div class="panel fragment"><p class="lead">core team</p><p>sustained contributors who maintain napari and decide by consensus<br><span class="muted">17 members</span></p></div>
+  <div class="panel fragment"><p class="lead">steering council</p><p>steps in when consensus fails; strategy, funding, partnerships<br><span class="muted">4 members</span></p></div>
 </div>
 ```
 
 [napari.org/stable/community/governance.html]{.command}
 
-::: {.notes}
-napari is consensus-based. Most decisions happen in PR review and discussion.
-The steering council only steps in when consensus fails. A few roles are paid
-from grants (developers-in-residence, community managers, operations), plus
-contracted work with Quansight; most contributions are volunteer.
-:::
-
-## 2026 is our biggest year yet: 93 contributors, 61 of them new
+## `{python} THIS_YEAR` is our biggest year yet: `{python} N_CONTRIB` contributors, `{python} N_NEW` of them new
 
 ```{python}
 #| output: asis
-show(plots.contributors_by_year(data.contributors_by_year()), "contributors")
+show(plots.contributors_by_year(CONTRIB), "contributors")
 ```
 
 [contributors to public napari GitHub repos · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
 
-# how work happens {.statement}
-
-## Everything happens in the open
-
-:::: {.columns}
-::: {.column width="50%"}
-::: {.links}
-[talk]{.lbl} Zulip: questions, design, release coordination
-
-[build]{.lbl} GitHub: issues, PRs, review, triage labels
-
-[meet]{.lbl} community meetings and working groups, open to all
-
-[record]{.lbl} meeting notes in napari/meeting-notes
-:::
-:::
-::: {.column width="50%"}
-::: {.panel}
-[working groups]{.caption}
-
-- Bundled application
-- Documentation
-- Graphs layer
-- Plugins
-
-[at least two co-leads and a core sponsor; anyone can start one]{.muted}
-:::
-:::
-::::
-
-::: {.notes}
-Nothing is decided behind closed doors. Zulip is where conversation lives;
-GitHub is where it lands. Meetings are on the public calendar in several time
-zones.
-:::
-
-## A first PR: five reviewers, merged in ten days
-
-![](../../shared/media/pr-9107.png){width=100%}
-
-::: {style="display:flex;gap:32px;align-items:center;margin-top:16px"}
-![](../../shared/media/pr-9107-participants.png){width=360}
-
-[a newcomer's first napari PR, opened 2026-06-27, merged 2026-07-07, shipped in 0.8.0a1]{.caption}
-:::
-
-::: {.notes}
-This is what contributing looks like. A newcomer picked up an open issue,
-opened their first PR, and five people from across the team reviewed it,
-including a steering council member. Ten days later it was merged and in the next release. Eight
-people took part. You don't need permission to start.
-:::
-
-# plugins and ecosystem {.statement}
-
-## Over 700 plugins, and 2026 is already the biggest year
+## Every release since 0.7.0 brought someone new
 
 ```{python}
 #| output: asis
-show(plots.new_plugins_by_year(data.new_plugins_by_year()), "new-plugins")
+show(plots.release_contributors(data.release_contributors()), "release-contributors")
+```
+
+[bar width = release cycle, area = people in the release notes · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
+
+::: {.notes}
+We moved to monthly releases this autumn. Each bar is one release: the wider,
+the longer the cycle; the taller, the more people per month.
+:::
+
+## `{python} N_PLUGINS` plugins: the ecosystem needs maintainers, not just authors
+
+```{python}
+#| output: asis
+show(plots.new_plugins_by_year(PLUGINS), "new-plugins")
 ```
 
 [napari plugins on PyPI · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
 
-## Half of the living plugins shipped a release in the last six months
+## Start by showing up
+
+:::: {.columns}
+::: {.column width="62%"}
+![](media/zulip.png){width=100%}
+
+[napari.zulipchat.com]{.lead style="font-size:1.6em"}
+:::
+::: {.column width="38%"}
+::: {.links}
+[chat]{.lbl} napari.zulipchat.com
+
+[meet]{.lbl} community meetings; docs, plugin and graph layer working groups
+
+[ask]{.lbl} forum.image.sc, tag: napari
+:::
 
 ```{python}
 #| output: asis
-show(plots.plugin_status(data.plugin_status()), "plugin-status")
+print(f'<img src="{qr(MEETINGS, "meetings")}" style="width:160px;margin-top:8px">\n')
 ```
 
-[living = a release in the past 2 years; that share was 35% in mid-2024 · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
+[meeting schedule]{.caption}
+:::
+::::
 
 ::: {.notes}
-Every plugin ever released, stacked by when it last shipped. The top is the
-total, still climbing. The blue band is plugins released in the last six
-months: flat at 120-150 for years, now about 200. Of plugins that have done
-anything in two years, the share releasing recently went from about a third
-in 2024 to about half now. The grey band is the long tail of one-off thesis
-plugins. That's fine, but it means the ecosystem needs maintainers, not just
-authors.
+Type napari.zulipchat.com with me now. You can read it without an account.
+Meetings are open to everyone and run in several time zones.
 :::
 
-# work with us {.statement}
+## A first PR can be tiny
 
-## What we can do together
+![](media/pr7304-title.png){width=70%}
+
+![](media/pr7304-diff.png){width=68%}
+
+[my first napari PR: removing 25 full stops, merged in two days]{.caption}
+
+## GitHub needs contributions and reviews
 
 ```{=html}
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px">
-  <div class="panel fragment"><p class="lead">amplify</p><p>your plugin, paper or workflow on the Island Dispatch blog, napari.org and our socials</p></div>
-  <div class="panel fragment"><p class="lead">co-maintain</p><p>keep your plugin working as napari changes; review, migration help, shared tooling</p></div>
-  <div class="panel fragment"><p class="lead">fund</p><p>write grants together; napari's own roles are grant-funded</p></div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-top:24px">
+  <div class="panel"><p class="lead">contribute</p><p>issues, docs, examples, fixes, features</p></div>
+  <div class="panel"><p class="lead">review</p><p>anyone can review a PR: try it, read it, say what you see. We need this most.</p></div>
+</div>
+```
+
+[github.com/napari/napari]{.command}
+
+## We want more triagers
+
+```{=html}
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-top:24px">
+  <div class="panel"><p class="lead">triage team</p><p>labels and sorts issues, reviews PRs<br><span class="muted">join: tell the core team you're interested</span></p></div>
+  <div class="panel"><p class="lead">core team</p><p>maintains napari and makes decisions<br><span class="muted">join: nominated after sustained contributions</span></p></div>
 </div>
 ```
 
 ::: {.notes}
-The plugin community and the core team need each other. We'd rather hear
-about your work than find it by accident.
+We're re-evaluating how we recognise contributors and what the core team
+means.
 :::
 
-## Your first steps
+## Hack with us
 
-```{python}
-#| output: asis
-steps = [
-    ("say hi", "napari.zulipchat.com", "https://napari.zulipchat.com"),
-    ("come to a meeting", "bit.ly/napari-meetings", "https://bit.ly/napari-meetings"),
-    ("start contributing", "napari.org/stable/developers/contributing", "https://napari.org/stable/developers/contributing/index.html"),
-]
-print('::: {style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:16px;text-align:center"}\n')
-for i, (what, label, url) in enumerate(steps):
-    print(f'::: {{.fragment}}\n![]({qr(url, str(i))}){{width=220}}\n\n[{what}]{{.lead}}\n\n[{label}]{{.command}}\n:::\n')
-print(":::\n")
-```
+[a yearly hackathon, likely in Europe next year]{.lead}
 
-::: {.notes}
-Lowest bar first: introduce yourself on Zulip and tell us what you work on.
-Then come to a community meeting. When you're ready, the contributing guide
-walks you from a dev install to your first PR, and points at good first issues.
+[watch Zulip for the announcement]{.muted}
+
+## Help us stay sustainable
+
+[we're looking to host workshops, and we're open to other funding]{.lead}
+
+[reach out to me: Tim Monko on napari.zulipchat.com]{.muted}
+
+## Thank you! Pick one: {.no-chrome}
+
+::: {.links}
+[chat]{.lbl} say hi on [napari.zulipchat.com](https://napari.zulipchat.com){.command}
+
+[meet]{.lbl} come to a [community meeting](https://napari.org/stable/community/meeting_schedule.html){.command}
+
+[review]{.lbl} review a PR on [github.com/napari](https://github.com/napari){.command}
+
+[learn]{.lbl} [napari.org](https://napari.org){.command}
 :::
 
-{{< include ../../shared/slides/community.qmd >}}
+![](../../_extensions/napari/logos/gradient-text-side-dark.svg){.only-dark width=200}
+![](../../_extensions/napari/logos/gradient-text-side-light.svg){.only-light width=200}
