@@ -121,7 +121,7 @@ volunteers, not paid to work on napari.
 ```{=html}
 <div class="np-timeline" style="--n:3">
   <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2019 – 2023</span><span class="what">CZI staff build napari alongside the community</span></div>
-  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2022</span><span class="what">CZI seed sustainability grant: napari becomes independent</span></div>
+  <div class="ev fragment"><span class="seg"></span><span class="dot"></span><span class="yr">2022</span><span class="what">CZI seed sustainability grant: napari begins independence</span></div>
   <div class="ev fragment now"><span class="seg"></span><span class="dot"></span><span class="yr">2024</span><span class="what">CZI scaffolding sustainability grant</span></div>
 </div>
 ```
@@ -183,9 +183,9 @@ show(plots.new_plugins_by_year(PLUGINS), "new-plugins")
 ```{python}
 #| output: asis
 print(f'''<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px">
-  <div class="panel"><p class="lead">chat</p><p class="command">napari.zulipchat.com</p><p class="muted">questions, ideas, what you're working on</p></div>
+  <div class="panel"><p class="lead" style="display:flex;align-items:center;gap:12px"><img src="media/zulip-icon-circle.svg" style="width:44px;height:44px;margin:0">chat</p><p class="command">napari.zulipchat.com</p><p class="muted">questions, ideas, what you're working on</p></div>
+  <div class="panel"><p class="lead" style="display:flex;align-items:center;gap:12px"><img src="media/imagesc-icon.png" style="width:44px;height:44px;margin:0">ask</p><p class="command">forum.image.sc</p><p class="muted">usage questions, tag napari</p></div>
   <div class="panel"><p class="lead">meet</p><p>community meetings and working groups</p><img src="{qr(MEETINGS, "meetings")}" style="width:150px"></div>
-  <div class="panel"><p class="lead">ask</p><p class="command">forum.image.sc</p><p class="muted">usage questions, tag napari</p></div>
 </div>
 ''')
 ```
@@ -210,7 +210,7 @@ for mode in ("dark", "light"):
 ```{=html}
 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-top:24px">
   <div class="panel"><p class="lead">contribute</p><p>issues, docs, examples, fixes, features</p></div>
-  <div class="panel"><p class="lead">review</p><p>anyone can review a PR: try it, read it, say what you see. We need this most.</p></div>
+  <div class="panel"><p class="lead">review</p><p>anyone can review a PR: try it, read it, say what you see</p></div>
 </div>
 ```
 
