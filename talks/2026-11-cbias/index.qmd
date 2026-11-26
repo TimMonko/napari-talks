@@ -82,12 +82,7 @@ def qr(url, name):
 </div>
 ```
 
-::: {.notes}
-Each step was a different role: plugin author, contributor, maintainer,
-community manager. You can be any of these, and stop at any of them.
-:::
-
-## Today: one of four people paid to work on napari
+## A small paid team
 
 ```{=html}
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-top:40px;text-align:center">
@@ -111,11 +106,6 @@ else:
     print("[team map goes here: `pixi run -e demos team-map` writes shared/media/generated/team-map.jpg]{.muted}\n")
 ```
 
-::: {.notes}
-Every face is a team member, placed near where they live. Most of them are
-volunteers, not paid to work on napari.
-:::
-
 ## An independent project, funded by grants
 
 ```{=html}
@@ -127,12 +117,6 @@ volunteers, not paid to work on napari.
 ```
 
 [fiscal home: NumFOCUS · napari.org/stable/community/funding.html]{.caption}
-
-::: {.notes}
-The 2022 seed grant started napari's path to independence. The scaffolding
-sustainability grant ($1.7M) pays the four of us. Funders hold one seat on
-the steering council.
-:::
 
 ## So who decides?
 
@@ -164,11 +148,6 @@ show(plots.release_contributors(data.release_contributors()), "release-contribut
 
 [bar width = release cycle, area = people in the release notes · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
 
-::: {.notes}
-We moved to monthly releases this autumn. Each bar is one release: the wider,
-the longer the cycle; the taller, the more people per month.
-:::
-
 ## `{python} N_PLUGINS` plugins: the ecosystem needs maintainers, not just authors
 
 ```{python}
@@ -189,11 +168,6 @@ print(f'''<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
 </div>
 ''')
 ```
-
-::: {.notes}
-Type napari.zulipchat.com with me now. You can read it without an account.
-Meetings are open to everyone and run in several time zones.
-:::
 
 ## A first PR can be tiny
 
@@ -216,7 +190,7 @@ for mode in ("dark", "light"):
 
 [github.com/napari/napari]{.command}
 
-## We want more triagers
+## We want you!
 
 ```{=html}
 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-top:24px">
@@ -224,11 +198,6 @@ for mode in ("dark", "light"):
   <div class="panel"><p class="lead">core team</p><p>maintains napari and makes decisions<br><span class="muted">join: nominated after sustained contributions</span></p></div>
 </div>
 ```
-
-::: {.notes}
-We're re-evaluating how we recognise contributors and what the core team
-means.
-:::
 
 ## Hack with us
 
@@ -239,20 +208,29 @@ means.
 ## Help us stay sustainable
 
 [we're looking to host workshops, and we're open to other funding]{.lead}
+[napari.org/workshops](https://napari.org/workshops){.command}
 
 [reach out: [info@napari.org]{.command} · [tim@napari.org]{.command}]{.muted}
 
+## Hot tips
+
+Try out [uv](https://docs.astral.sh/uv/){.command} and [pixi](https://docs.astral.sh/uv/){.command}!
+
+`uvx -w napari[all] -w ndevio napari`
+
 ## Thank you! Pick one: {.no-chrome}
+
+![](../../_extensions/napari/logos/gradient-plain-dark.svg){.only-dark width=200}
+![](../../_extensions/napari/logos/gradient-plain-light.svg){.only-light width=200}
+![](media/pride-plain-dark.svg){.only-dark width=200}
+![](media/pride-plain-light.svg){.only-light width=200}
 
 ::: {.links}
 [chat]{.lbl} say hi on [napari.zulipchat.com](https://napari.zulipchat.com){.command}
 
 [meet]{.lbl} come to a [community meeting](https://napari.org/stable/community/meeting_schedule.html){.command}
 
-[review]{.lbl} review a PR on [github.com/napari](https://github.com/napari){.command}
+[review]{.lbl} contribute  on [github.com/napari](https://github.com/napari){.command}
 
-[learn]{.lbl} [napari.org](https://napari.org){.command}
+[learn]{.lbl} on [napari.org](https://napari.org){.command}
 :::
-
-![](../../_extensions/napari/logos/gradient-text-side-dark.svg){.only-dark width=200}
-![](../../_extensions/napari/logos/gradient-text-side-light.svg){.only-light width=200}
