@@ -139,7 +139,7 @@ show(plots.contributors_by_year(CONTRIB), "contributors")
 
 [contributors to public napari GitHub repos · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
 
-## Every release since 0.7.0 brought someone new
+## Improved release cadence with an official policy
 
 ```{python}
 #| output: asis
@@ -148,7 +148,7 @@ show(plots.release_contributors(data.release_contributors()), "release-contribut
 
 [bar width = release cycle, area = people in the release notes · as of `{python} AS_OF` · data: timmonko/nps]{.caption}
 
-## `{python} N_PLUGINS` plugins: the ecosystem needs maintainers, not just authors
+## `{python} N_PLUGINS` plugins, but the ecosystem needs maintainers, not just authors
 
 ```{python}
 #| output: asis
